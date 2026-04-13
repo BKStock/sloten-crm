@@ -1,0 +1,3207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sloten CRM</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #dbeafe;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-alt: #f1f5f9;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --red: #ef4444;
+  --red-bg: #fef2f2;
+  --red-border: #fecaca;
+  --orange: #f97316;
+  --orange-bg: #fff7ed;
+  --orange-border: #fed7aa;
+  --yellow: #eab308;
+  --yellow-bg: #fefce8;
+  --yellow-border: #fef08a;
+  --green: #22c55e;
+  --green-bg: #f0fdf4;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.2s ease;
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-alt: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --border: #334155;
+  --border-light: #1e293b;
+  --primary-light: #1e3a5f;
+  --red-bg: #1c1917;
+  --red-border: #7f1d1d;
+  --orange-bg: #1c1917;
+  --orange-border: #7c2d12;
+  --yellow-bg: #1c1917;
+  --yellow-border: #713f12;
+  --green-bg: #052e16;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -2px rgba(0,0,0,0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.2);
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background var(--transition), color var(--transition);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Header ===== */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--text-tertiary);
+  font-weight: 400;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+/* ===== Tab Navigation ===== */
+.tab-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.tab-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* ===== Dark Mode Toggle ===== */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-toggle {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* ===== Breadcrumb ===== */
+.breadcrumb {
+  padding: 10px 24px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border);
+}
+.breadcrumb a { color: var(--primary); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb .sep { margin: 0 8px; }
+
+/* ===== Main Content ===== */
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+  flex: 1;
+  width: 100%;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+  animation: fadeIn 0.25s ease;
+}
+
+/* Skeleton loading */
+.page.loading .skeleton-overlay {
+  display: block;
+}
+.skeleton-overlay { display: none; }
+.skeleton-pulse {
+  background: linear-gradient(90deg, var(--surface-alt) 25%, var(--border-light) 50%, var(--surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  height: 20px;
+  margin-bottom: 12px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+/* ===== KPI Cards ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.kpi-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
+}
+
+.kpi-compare {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kpi-compare.up { color: var(--green); }
+.kpi-compare.down { color: var(--red); }
+
+.arrow-up::before { content: ""; display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 6px solid var(--green); margin-right: 2px; }
+.arrow-down::before { content: ""; display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--red); margin-right: 2px; }
+
+/* ===== Alert Badges ===== */
+.alert-badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+}
+
+.alert-badge:hover { transform: translateY(-1px); }
+
+.alert-badge.red {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: var(--red-border);
+}
+
+.alert-badge.orange {
+  background: var(--orange-bg);
+  color: var(--orange);
+  border-color: var(--orange-border);
+}
+
+.alert-badge.yellow {
+  background: var(--yellow-bg);
+  color: var(--yellow);
+  border-color: var(--yellow-border);
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-dot.red { background: var(--red); }
+.badge-dot.orange { background: var(--orange); }
+.badge-dot.yellow { background: var(--yellow); }
+
+/* ===== Dashboard Grid ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* ===== Card Component ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* ===== Task List ===== */
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.task-item:last-child { border-bottom: none; }
+
+.task-info {
+  flex: 1;
+}
+
+.task-user {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.task-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.task-tier {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.tier-vip { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.tier-gold { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); }
+.tier-silver { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+.tier-bronze { background: var(--surface-alt); color: var(--text-secondary); border: 1px solid var(--border); }
+
+/* ===== Buttons ===== */
+.btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-outline {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-done {
+  background: var(--green-bg);
+  color: var(--green);
+  border-color: var(--green);
+  cursor: default;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-danger {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.btn-danger:hover {
+  opacity: 0.9;
+}
+
+.btn-warning {
+  background: var(--orange);
+  color: #fff;
+  border-color: var(--orange);
+}
+.btn-warning:hover { opacity: 0.9; }
+
+/* ===== Sparkline Chart ===== */
+.sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 80px;
+  padding-top: 8px;
+}
+
+.spark-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.spark-bar {
+  width: 100%;
+  max-width: 36px;
+  border-radius: 4px 4px 0 0;
+  background: var(--primary);
+  transition: height 0.4s ease;
+  min-height: 4px;
+  opacity: 0.85;
+}
+
+.spark-bar:hover { opacity: 1; }
+
+.spark-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.spark-value {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ===== Alerts Page ===== */
+.sub-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.sub-tab {
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+
+.sub-tab:hover { border-color: var(--text-tertiary); }
+
+.sub-tab.active-red {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: var(--red-border);
+}
+
+.sub-tab.active-orange {
+  background: var(--orange-bg);
+  color: var(--orange);
+  border-color: var(--orange-border);
+}
+
+.sub-tab.active-yellow {
+  background: var(--yellow-bg);
+  color: var(--yellow);
+  border-color: var(--yellow-border);
+}
+
+.sub-tab .count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  font-size: 11px;
+  margin-left: 6px;
+  padding: 0 6px;
+  background: var(--border);
+  color: var(--text-secondary);
+}
+
+.sub-tab.active-red .count { background: var(--red); color: #fff; }
+.sub-tab.active-orange .count { background: var(--orange); color: #fff; }
+.sub-tab.active-yellow .count { background: var(--yellow); color: #fff; }
+
+.alert-list {
+  display: none;
+}
+
+.alert-list.active {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alert-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.alert-card:hover {
+  box-shadow: var(--shadow);
+}
+
+.alert-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.alert-card .alert-severity {
+  width: 4px;
+  height: 40px;
+  border-radius: 2px;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.alert-severity.sev-red { background: var(--red); }
+.alert-severity.sev-orange { background: var(--orange); }
+.alert-severity.sev-yellow { background: var(--yellow); }
+
+.alert-card-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.alert-details {
+  flex: 1;
+}
+
+.alert-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.alert-meta-item {
+  font-size: 13px;
+}
+
+.alert-meta-label {
+  color: var(--text-tertiary);
+  margin-right: 4px;
+}
+
+.alert-meta-value {
+  font-weight: 600;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.memo-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: var(--surface-alt);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.memo-input:focus {
+  border-color: var(--primary);
+}
+
+.memo-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Bulk actions bar */
+.bulk-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.bulk-actions label { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+/* ===== CJ Dashboard Page ===== */
+.cj-summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.cj-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.cj-stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.cj-stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.cj-mode-indicator {
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  color: var(--red);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.cj-task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.cj-task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow var(--transition), transform var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.cj-task-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.cj-task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.cj-task-priority {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.cj-task-priority.p0 { background: #dc2626; }
+.cj-task-priority.p1 { background: #ef4444; }
+.cj-task-priority.p2 { background: #f97316; }
+.cj-task-priority.p3 { background: #f59e0b; }
+.cj-task-priority.p4-p8 { background: #3b82f6; }
+.cj-task-priority.p9-p14 { background: #8b5cf6; }
+.cj-task-priority.p15-p19 { background: #06b6d4; }
+.cj-task-priority.p20-p22 { background: #22c55e; }
+.cj-task-priority.p23-p26 { background: #64748b; }
+.cj-task-priority.p-sms { background: #ec4899; }
+.cj-task-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 99px;
+}
+.cj-task-status.active {
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.cj-task-status.paused {
+  background: var(--yellow-bg);
+  color: var(--yellow);
+  border: 1px solid var(--yellow);
+}
+.cj-task-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.cj-task-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+.cj-task-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.cj-task-target-count {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 16px;
+}
+
+/* CJ Modal */
+.cj-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+.cj-modal-overlay.open {
+  display: flex;
+}
+.cj-modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  max-width: 1100px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+.cj-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.cj-modal-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+.cj-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.cj-modal-close:hover {
+  background: var(--surface-alt);
+}
+.cj-modal-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.cj-modal-users {
+  width: 380px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 16px;
+  border-right: 1px solid var(--border);
+}
+.cj-modal-users h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+.cj-user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-light);
+}
+.cj-user-row:hover {
+  background: var(--surface-alt);
+}
+.cj-user-id {
+  font-weight: 600;
+  color: var(--primary);
+  width: 80px;
+  flex-shrink: 0;
+}
+.cj-user-name {
+  flex: 1;
+  font-weight: 500;
+}
+.cj-user-detail {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.cj-modal-preview {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+.cj-modal-preview h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+.cj-modal-preview iframe {
+  flex: 1;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+@media (max-width: 768px) {
+  .cj-modal-body { flex-direction: column; }
+  .cj-modal-users { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+  .cj-task-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Journey Page ===== */
+.search-box {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.search-input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.search-input:focus { border-color: var(--primary); }
+
+.user-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.user-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.user-card-info {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.user-card-info .label { color: var(--text-tertiary); margin-right: 4px; }
+.user-card-info .value { font-weight: 600; }
+
+.progress-bar-wrap {
+  background: var(--surface-alt);
+  border-radius: 8px;
+  height: 24px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 12px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--green));
+  border-radius: 8px;
+  transition: width 0.6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+.progress-bar-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.email-list {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.email-list-item {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.step-select {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Journey step summary */
+.step-summary { margin-top: 32px; }
+.step-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.step-bar-label {
+  width: 180px;
+  font-size: 13px;
+  text-align: right;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+.step-bar-track {
+  flex: 1;
+  background: var(--surface-alt);
+  border-radius: 6px;
+  height: 28px;
+  overflow: hidden;
+}
+.step-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  transition: width 0.6s ease;
+}
+.step-bar-fill span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+.step-bar-count {
+  width: 70px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* ===== VIP Page ===== */
+.vip-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.data-table th {
+  background: var(--surface-alt);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+.data-table tr:hover td {
+  background: var(--surface-alt);
+}
+
+.risk-low { color: var(--green); font-weight: 600; }
+.risk-med { color: var(--yellow); font-weight: 600; }
+.risk-high { color: var(--red); font-weight: 600; }
+
+.tg-joined { color: var(--green); }
+.tg-invited { color: var(--orange); }
+.tg-none { color: var(--text-tertiary); }
+
+.vip-memo-toggle {
+  font-size: 12px;
+  color: var(--primary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
+.vip-memo-content {
+  display: none;
+  padding: 8px;
+  margin-top: 6px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+.vip-memo-content.open { display: block; }
+
+/* ===== Settings Page ===== */
+.settings-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.settings-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.setting-label {
+  width: 240px;
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.setting-control {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.setting-input {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background: var(--surface-alt);
+  color: var(--text);
+  outline: none;
+  width: 200px;
+}
+.setting-input:focus { border-color: var(--primary); }
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.slider-wrap input[type="range"] {
+  width: 200px;
+  accent-color: var(--primary);
+}
+.slider-value {
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 40px;
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.template-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.template-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+.template-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.connection-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.status-connected { background: var(--green-bg); color: var(--green); }
+.status-disconnected { background: var(--red-bg); color: var(--red); }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open {
+  display: flex;
+}
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 500px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.modal-close {
+  float: right;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+.modal-close:hover { color: var(--text); }
+
+.template-preview {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin: 16px 0;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* ===== Toast ===== */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  box-shadow: var(--shadow-md);
+  font-size: 14px;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--red); }
+.toast.info { border-left: 4px solid var(--primary); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 16px 24px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  margin-top: auto;
+}
+
+/* ===== Mock label ===== */
+.mock-label {
+  display: inline-block;
+  font-size: 10px;
+  background: var(--yellow-bg);
+  color: var(--yellow);
+  border: 1px solid var(--yellow-border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Checkbox */
+.alert-checkbox { margin-right: 8px; cursor: pointer; }
+
+/* ===== Send Preview ===== */
+.send-preview-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.send-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.send-preview-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.send-preview-stat {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 13px;
+}
+.send-preview-stat .stat-label {
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.send-preview-stat .stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+.send-preview-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.breakdown-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+.breakdown-tag .tag-count {
+  font-weight: 700;
+}
+.send-preview-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+.btn-fail {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: var(--red-border);
+  cursor: default;
+}
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.send-preview-hidden { display: none; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .cj-task-grid { grid-template-columns: repeat(2, 1fr); }
+  .vip-stats { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .header { padding: 0 16px; flex-wrap: wrap; height: auto; min-height: 60px; padding-top: 8px; padding-bottom: 8px; }
+  .header-left { gap: 12px; flex-wrap: wrap; }
+  .logo span { display: none; }
+  .tab-btn { padding: 6px 10px; font-size: 13px; }
+  .main { padding: 16px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi-value { font-size: 22px; }
+  .alert-badges { flex-wrap: wrap; }
+  .alert-meta { gap: 12px; }
+  .cj-summary-stats { grid-template-columns: repeat(2, 1fr); }
+  .step-bar-label { width: 120px; font-size: 12px; }
+  .data-table { font-size: 12px; }
+  .data-table th, .data-table td { padding: 6px 8px; }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .tab-nav { gap: 2px; }
+  .tab-btn { padding: 6px 8px; font-size: 12px; }
+  .sub-tabs { flex-wrap: wrap; }
+  .alert-actions { flex-direction: column; align-items: stretch; }
+  .memo-input { min-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">Sloten<span>CRM v2</span></div>
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">ダッシュボード</button>
+      <button class="tab-btn" data-tab="alerts" onclick="switchTab('alerts')">アラート</button>
+      <button class="tab-btn" data-tab="analytics" onclick="switchTab('analytics')">CJ自動メール</button>
+      <button class="tab-btn" data-tab="journey" onclick="switchTab('journey')">ジャーニー</button>
+      <button class="tab-btn" data-tab="vip" onclick="switchTab('vip')">VIP管理</button>
+      <button class="tab-btn" data-tab="push" onclick="switchTab('push')">プッシュ通知</button>
+      <button class="tab-btn" data-tab="competitor" onclick="switchTab('competitor')">競合監視</button>
+      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">設定</button>
+    </nav>
+  </div>
+  <div class="header-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" style="display:none"><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb" id="breadcrumb">
+  <a href="#" onclick="switchTab('dashboard');return false;">Sloten CRM</a>
+  <span class="sep">/</span>
+  <span id="breadcrumb-current">ダッシュボード</span>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModalForce()">&times;</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- ===== Dashboard Page ===== -->
+  <section class="page active" id="page-dashboard">
+    <h1 class="page-title">ダッシュボード <span class="cj-live-label" id="dashboard-live-label" style="font-size:12px;padding:2px 8px;border-radius:4px;background:#22c55e;color:#fff;margin-left:8px;vertical-align:middle;">LIVE</span></h1>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <!-- Alert Badges -->
+    <div class="alert-badges">
+      <div class="alert-badge red" onclick="switchTab('alerts');switchAlertTab('red')">
+        <span class="badge-dot red"></span>
+        赤 <strong id="badge-red">3</strong>件
+      </div>
+      <div class="alert-badge orange" onclick="switchTab('alerts');switchAlertTab('orange')">
+        <span class="badge-dot orange"></span>
+        オレンジ <strong id="badge-orange">8</strong>件
+      </div>
+      <div class="alert-badge yellow" onclick="switchTab('alerts');switchAlertTab('yellow')">
+        <span class="badge-dot yellow"></span>
+        黄 <strong id="badge-yellow">15</strong>件
+      </div>
+    </div>
+
+    <!-- Campaign Effectiveness -->
+    <div style="margin-top:20px;">
+      <h2 style="font-size:16px;font-weight:700;margin-bottom:12px;">施策効果測定</h2>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="effectiveness-table">
+          <thead>
+            <tr>
+              <th>施策名</th>
+              <th>タイプ</th>
+              <th>送信数</th>
+              <th>開封率</th>
+              <th>ログイン率</th>
+              <th>入金率</th>
+              <th>プレイ率</th>
+              <th>ROI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="font-weight:600;">3日未ログイン復帰</td><td>プッシュ</td><td>342</td><td style="color:var(--green);font-weight:700;">68%</td><td style="color:var(--green);">34%</td><td style="color:var(--orange);">12%</td><td>28%</td><td style="color:var(--green);font-weight:700;">+185%</td></tr>
+            <tr><td style="font-weight:600;">水曜リロード案内</td><td>メール</td><td>1,240</td><td>42%</td><td style="color:var(--green);">38%</td><td style="color:var(--green);font-weight:700;">22%</td><td>35%</td><td style="color:var(--green);font-weight:700;">+320%</td></tr>
+            <tr><td style="font-weight:600;">大負けキャッシュバック</td><td>プッシュ</td><td>89</td><td style="color:var(--green);font-weight:700;">72%</td><td style="color:var(--green);">45%</td><td style="color:var(--green);">18%</td><td style="color:var(--green);">42%</td><td style="color:var(--green);">+95%</td></tr>
+            <tr><td style="font-weight:600;">7日未ログイン</td><td>メール+SMS</td><td>567</td><td>38%</td><td style="color:var(--orange);">18%</td><td style="color:var(--red);">5%</td><td>14%</td><td style="color:var(--orange);">+42%</td></tr>
+            <tr><td style="font-weight:600;">VIP昇格通知</td><td>プッシュ</td><td>23</td><td style="color:var(--green);font-weight:700;">91%</td><td style="color:var(--green);font-weight:700;">78%</td><td style="color:var(--green);font-weight:700;">52%</td><td style="color:var(--green);font-weight:700;">65%</td><td style="color:var(--green);font-weight:700;">+580%</td></tr>
+            <tr><td style="font-weight:600;">Bonsダウン時プロモ</td><td>SNS+プッシュ</td><td>1,500</td><td>55%</td><td style="color:var(--green);">28%</td><td style="color:var(--green);">15%</td><td>22%</td><td style="color:var(--green);font-weight:700;">+210%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dashboard-grid" style="margin-top:16px;">
+      <!-- Task List -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">対応待ちタスク</span>
+          <span style="font-size:13px;color:var(--text-tertiary)" id="task-count"></span>
+        </div>
+        <div class="card-body" id="task-list"></div>
+      </div>
+
+      <!-- Best performing -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">効果の高い施策 TOP3</span>
+        </div>
+        <div class="card-body" style="font-size:13px;">
+          <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;"><strong>1. VIP昇格通知</strong><span style="color:var(--green);font-weight:700;">ROI +580%</span></div>
+            <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">開封91% / ログイン78% / 入金52%</div>
+          </div>
+          <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;"><strong>2. 水曜リロード案内</strong><span style="color:var(--green);font-weight:700;">ROI +320%</span></div>
+            <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">開封42% / ログイン38% / 入金22%</div>
+          </div>
+          <div style="padding:10px 0;">
+            <div style="display:flex;justify-content:space-between;"><strong>3. 競合ダウン時プロモ</strong><span style="color:var(--green);font-weight:700;">ROI +210%</span></div>
+            <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">開封55% / ログイン28% / 入金15%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Alerts Page ===== -->
+  <section class="page" id="page-alerts">
+    <h1 class="page-title">アラート <span class="cj-live-label" id="alerts-live-label" style="font-size:12px;padding:2px 8px;border-radius:4px;background:#22c55e;color:#fff;margin-left:8px;vertical-align:middle;">LIVE</span></h1>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions">
+      <label><input type="checkbox" id="select-all-alerts" onchange="toggleSelectAllAlerts(this)"> 全選択</label>
+      <button class="btn btn-outline btn-sm" onclick="bulkMarkDone()">一括対応済み</button>
+      <span style="font-size:12px;color:var(--text-tertiary)" id="selected-count">0件選択中</span>
+    </div>
+
+    <div class="sub-tabs" id="alert-sub-tabs">
+      <button class="sub-tab active-red" data-alert="red" onclick="switchAlertTab('red')">
+        赤 (VIP緊急) <span class="count">3</span>
+      </button>
+      <button class="sub-tab" data-alert="orange" onclick="switchAlertTab('orange')">
+        オレンジ (警告) <span class="count">8</span>
+      </button>
+      <button class="sub-tab" data-alert="yellow" onclick="switchAlertTab('yellow')">
+        黄 (注意) <span class="count">15</span>
+      </button>
+    </div>
+
+    <div class="alert-list active" id="alert-list-red"></div>
+    <div class="alert-list" id="alert-list-orange"></div>
+    <div class="alert-list" id="alert-list-yellow"></div>
+  </section>
+
+  <!-- ===== Analytics Page ===== -->
+  <section class="page" id="page-analytics">
+    <h1 class="page-title">CJ自動メール管理 <span class="cj-live-label" id="cj-live-label" style="font-size:12px;padding:2px 8px;border-radius:4px;background:#22c55e;color:#fff;margin-left:8px;vertical-align:middle;">LIVE</span></h1>
+
+    <div class="cj-mode-indicator" id="cj-mode-indicator"></div>
+
+    <div class="cj-summary-stats" id="cj-summary-stats"></div>
+
+    <div class="cj-task-grid" id="cj-task-grid"></div>
+  </section>
+
+  <!-- CJ Email Preview Modal -->
+  <div class="cj-modal-overlay" id="cj-modal-overlay" onclick="closeCJModal(event)">
+    <div class="cj-modal" onclick="event.stopPropagation()">
+      <div class="cj-modal-header">
+        <h2 id="cj-modal-title">タスク詳細</h2>
+        <button class="cj-modal-close" onclick="closeCJModal()">&times;</button>
+      </div>
+      <div class="cj-modal-body">
+        <div class="cj-modal-users" id="cj-modal-users"></div>
+        <div class="cj-modal-preview">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;">
+            <h3 style="margin:0;">メールプレビュー</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a id="cj-modal-preview-link" href="#" target="_blank" rel="noopener" style="font-size:12px;padding:6px 12px;background:var(--surface-alt);color:var(--primary);border-radius:6px;text-decoration:none;border:1px solid var(--border);">🔗 別タブで開く</a>
+              <button id="cj-modal-send-test" onclick="sendCJTestEmail()" style="font-size:12px;padding:6px 12px;background:#22c55e;color:#fff;border:none;border-radius:6px;cursor:pointer;">📧 テスト送信 (TK宛)</button>
+            </div>
+          </div>
+          <iframe id="cj-modal-iframe" src="about:blank" sandbox="allow-same-origin allow-popups" style="flex:1;min-height:500px;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Journey Page ===== -->
+  <section class="page" id="page-journey">
+    <h1 class="page-title">ジャーニー管理 <span class="cj-live-label" id="journey-live-label" style="font-size:12px;padding:2px 8px;border-radius:4px;background:#22c55e;color:#fff;margin-left:8px;vertical-align:middle;">LIVE</span></h1>
+
+    <!-- Send Preview Section -->
+    <div style="margin-bottom:24px;">
+      <button class="btn btn-primary" id="send-preview-btn" onclick="executeSendPreview()" style="padding:10px 24px;font-size:14px;">送信プレビュー実行</button>
+    </div>
+    <div id="send-preview-area" class="send-preview-hidden"></div>
+
+    <div class="search-box">
+      <input type="text" class="search-input" id="journey-search" placeholder="ユーザーID、ユーザー名、またはメールで検索..." />
+      <button class="btn btn-primary" onclick="searchJourneyUser()">検索</button>
+    </div>
+
+    <div id="journey-results"></div>
+
+    <div class="step-summary" id="step-summary">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;">ステップ別人数サマリー</h2>
+      <div id="step-bars"></div>
+    </div>
+  </section>
+
+  <!-- ===== VIP Page ===== -->
+  <section class="page" id="page-vip">
+    <h1 class="page-title">VIP管理 <span class="cj-live-label" id="vip-live-label" style="font-size:12px;padding:2px 8px;border-radius:4px;background:#22c55e;color:#fff;margin-left:8px;vertical-align:middle;">LIVE</span></h1>
+
+    <div class="vip-stats" id="vip-stats"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">VIPリスト</span>
+      </div>
+      <div class="card-body" style="padding:0;overflow-x:auto;">
+        <table class="data-table" id="vip-table">
+          <thead>
+            <tr>
+              <th>ユーザーID</th>
+              <th>ティア</th>
+              <th>月間入金額</th>
+              <th>月間BET額</th>
+              <th>最終ログイン</th>
+              <th>離脱リスク</th>
+              <th>TGグループ</th>
+              <th>アクション</th>
+            </tr>
+          </thead>
+          <tbody id="vip-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Push Notifications Page ===== -->
+  <section class="page" id="page-push">
+    <h1 class="page-title">プッシュ通知</h1>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">一括プッシュ送信</h3>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">対象セグメント</label>
+          <select id="push-segment" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="all">全ユーザー</option>
+            <option value="active">アクティブユーザー</option>
+            <option value="inactive_3d">3日以上未ログイン</option>
+            <option value="inactive_7d">7日以上未ログイン</option>
+            <option value="vip">VIPユーザーのみ</option>
+            <option value="deposited">入金済みユーザー</option>
+            <option value="no_deposit">未入金ユーザー</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">タイトル</label>
+          <input id="push-title" type="text" placeholder="新ボーナスのお知らせ" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">本文</label>
+          <textarea id="push-body" rows="3" placeholder="今だけ限定！入金50%マッチボーナス" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;resize:vertical;"></textarea>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">画像（リッチプッシュ用）</label>
+          <div style="display:flex;gap:8px;margin-bottom:4px;">
+            <input id="push-image" type="text" placeholder="画像URL (https://...)" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input id="push-image-file" type="file" accept="image/*" style="font-size:12px;" onchange="if(this.files[0]){var r=new FileReader();r.onload=function(){document.getElementById('push-image').value='[アップロード済]';document.getElementById('push-image').dataset.base64=r.result;};r.readAsDataURL(this.files[0]);}">
+            <span style="font-size:11px;color:var(--text-tertiary);">またはファイルアップロード</span>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">アクションURL</label>
+          <input id="push-url" type="text" value="https://sloten.jp" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+        </div>
+        <button onclick="sendPushNotification()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;">プッシュ送信</button>
+      </div>
+
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">自動トリガー設定</h3>
+        <div id="push-triggers" style="font-size:13px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>3日未ログイン</strong><br><span style="color:var(--text-secondary);font-size:11px;">復帰ボーナス&#165;500付き</span></div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--green);border-radius:12px;transition:0.3s;"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>7日未ログイン</strong><br><span style="color:var(--text-secondary);font-size:11px;">&#165;1,000ボーナス + メール併用</span></div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--green);border-radius:12px;transition:0.3s;"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>大負け後 (&#165;5万+)</strong><br><span style="color:var(--text-secondary);font-size:11px;">キャッシュバックオファー</span></div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--green);border-radius:12px;transition:0.3s;"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>VIP昇格間近</strong><br><span style="color:var(--text-secondary);font-size:11px;">あとXXで昇格通知</span></div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--green);border-radius:12px;transition:0.3s;"></span></label>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;">
+            <div><strong>登録後24h入金なし</strong><br><span style="color:var(--text-secondary);font-size:11px;">入金不要ボーナス案内</span></div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--green);border-radius:12px;transition:0.3s;"></span></label>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <h4 style="font-size:13px;margin-bottom:8px;">送信履歴</h4>
+          <div style="font-size:12px;color:var(--text-secondary);">
+            <div style="padding:6px 0;border-bottom:1px solid var(--border);">2026-04-12 15:30 | 全ユーザー | 水曜リロード案内 | 1,240送信</div>
+            <div style="padding:6px 0;border-bottom:1px solid var(--border);">2026-04-11 19:00 | VIP | Dream Pot抽選通知 | 89送信</div>
+            <div style="padding:6px 0;">2026-04-10 12:00 | 未ログイン3日 | 復帰ボーナス | 342送信</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Segment -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">カスタムセグメント作成</h3>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">セグメント名</label>
+          <input id="seg-name" type="text" placeholder="高額入金ユーザー" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">データソース</label>
+          <select id="seg-source" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;" onchange="document.getElementById('seg-csv-area').style.display=this.value==='csv'?'block':'none';document.getElementById('seg-bq-area').style.display=this.value==='bigquery'?'block':'none';document.getElementById('seg-filter-area').style.display=this.value==='filter'?'block':'none';">
+            <option value="filter">条件フィルタ</option>
+            <option value="csv">CSVアップロード</option>
+            <option value="bigquery">BigQueryクエリ</option>
+          </select>
+        </div>
+        <!-- Filter conditions -->
+        <div id="seg-filter-area">
+          <div style="margin-bottom:8px;">
+            <select id="seg-condition" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+              <option value="deposit_total_gte">累計入金額が ¥X 以上</option>
+              <option value="deposit_total_lte">累計入金額が ¥X 以下</option>
+              <option value="inactive_days_gte">未ログイン X日以上</option>
+              <option value="vip_tier_eq">VIPティアが X</option>
+              <option value="registered_after">X以降に登録</option>
+              <option value="ggr_gte">GGRが ¥X 以上</option>
+              <option value="bet_count_gte">ベット回数 X以上</option>
+              <option value="tag_eq">タグが X</option>
+            </select>
+          </div>
+          <input id="seg-value" type="text" placeholder="値を入力" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;margin-bottom:8px;">
+        </div>
+        <!-- CSV upload -->
+        <div id="seg-csv-area" style="display:none;">
+          <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">ユーザーIDまたはメールアドレスのCSVをアップロード</p>
+          <input id="seg-csv-file" type="file" accept=".csv,.txt" style="font-size:12px;margin-bottom:8px;">
+          <p style="font-size:10px;color:var(--text-tertiary);">形式: 1行1ユーザー（ID or メール）</p>
+        </div>
+        <!-- BigQuery -->
+        <div id="seg-bq-area" style="display:none;">
+          <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">BigQueryからユーザーリストを取得するSQLクエリ</p>
+          <textarea id="seg-bq-query" rows="4" placeholder="SELECT user_id FROM `dataset.users` WHERE total_deposit > 100000" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:12px;font-family:monospace;resize:vertical;"></textarea>
+          <p style="font-size:10px;color:var(--text-tertiary);margin-top:4px;">Project: ethereal-mind-475206-r8</p>
+        </div>
+        <button onclick="createCustomSegment()" style="width:100%;margin-top:12px;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">セグメント作成</button>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">保存済みセグメント</h3>
+        <div style="font-size:13px;">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><div><strong>VIPユーザー</strong><br><span style="color:var(--text-secondary);font-size:11px;">条件: VIPティア = Gold以上</span></div><span style="font-size:12px;color:var(--text-secondary);">234人</span></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><div><strong>休眠ユーザー</strong><br><span style="color:var(--text-secondary);font-size:11px;">条件: 30日以上未ログイン</span></div><span style="font-size:12px;color:var(--text-secondary);">1,203人</span></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);"><div><strong>高額入金者</strong><br><span style="color:var(--text-secondary);font-size:11px;">条件: 累計入金 ¥100万+</span></div><span style="font-size:12px;color:var(--text-secondary);">45人</span></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;"><div><strong>CSV Import 04/12</strong><br><span style="color:var(--text-secondary);font-size:11px;">ソース: CSVアップロード</span></div><span style="font-size:12px;color:var(--text-secondary);">89人</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Competitor Monitor Page ===== -->
+  <section class="page" id="page-competitor">
+    <h1 class="page-title">競合監視</h1>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">監視対象サイト</h3>
+        <div id="competitor-list" style="font-size:13px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>Vera&John</strong><br><span style="color:var(--text-secondary);font-size:11px;">verajohn.com</span></div>
+            <span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">UP</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>Casino Secret</strong><br><span style="color:var(--text-secondary);font-size:11px;">casinosecret.com</span></div>
+            <span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">UP</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>Bons Casino</strong><br><span style="color:var(--text-secondary);font-size:11px;">bons.com</span></div>
+            <span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">UP</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+            <div><strong>Eldoah</strong><br><span style="color:var(--text-secondary);font-size:11px;">eldoah.com</span></div>
+            <span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">UP</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;">
+            <div><strong>Konibet</strong><br><span style="color:var(--text-secondary);font-size:11px;">konibet.com</span></div>
+            <span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">UP</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <input id="comp-url" type="text" placeholder="https://example.com" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+          <input id="comp-name" type="text" placeholder="サイト名" style="width:120px;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+          <button onclick="addCompetitor()" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">追加</button>
+        </div>
+        <button onclick="checkAllCompetitors()" style="margin-top:12px;width:100%;padding:10px;background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text);">全サイト一括チェック</button>
+      </div>
+
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">自動アクション設定</h3>
+        <div style="font-size:13px;">
+          <div style="padding:12px;background:var(--surface-alt);border-radius:8px;margin-bottom:10px;">
+            <div style="font-weight:700;margin-bottom:4px;">1. サイトダウン検知時</div>
+            <div style="font-size:12px;color:var(--text-secondary);">
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> SNS自動投稿（X/Telegram）</label>
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> 限定ボーナスコード発行</label>
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox"> プッシュ通知送信</label>
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--surface-alt);border-radius:8px;margin-bottom:10px;">
+            <div style="font-weight:700;margin-bottom:4px;">2. メンテナンス予告検知</div>
+            <div style="font-size:12px;color:var(--text-secondary);">
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> 「メンテ中でも遊べる」投稿</label>
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox"> メール配信</label>
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--surface-alt);border-radius:8px;margin-bottom:10px;">
+            <div style="font-weight:700;margin-bottom:4px;">3. 出金遅延/障害検知</div>
+            <div style="font-size:12px;color:var(--text-secondary);">
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> SNSキーワード監視</label>
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> 「即時出金」比較表ツイート</label>
+            </div>
+            <input type="text" value="出金遅い,出金できない,メンテ,障害" placeholder="監視キーワード" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:11px;margin-top:4px;">
+          </div>
+          <div style="padding:12px;background:var(--surface-alt);border-radius:8px;margin-bottom:10px;">
+            <div style="font-weight:700;margin-bottom:4px;">4. 規約改悪/ボーナス条件変更</div>
+            <div style="font-size:12px;color:var(--text-secondary);">
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> 優位性アピール投稿</label>
+            </div>
+          </div>
+          <div style="padding:12px;background:var(--surface-alt);border-radius:8px;">
+            <div style="font-weight:700;margin-bottom:4px;">6. 決済障害時</div>
+            <div style="font-size:12px;color:var(--text-secondary);">
+              <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked> 「うちは全決済OK」投稿</label>
+            </div>
+          </div>
+        </div>
+        <button style="margin-top:16px;width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">設定を保存</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px;">
+      <h3 style="margin-bottom:12px;font-size:15px;font-weight:700;">検知ログ</h3>
+      <div style="font-size:12px;color:var(--text-secondary);">
+        <div style="padding:8px 0;border-bottom:1px solid var(--border);">2026-04-12 14:30 | Bons Casino | サイトダウン検知 (応答なし 15秒) | SNS投稿済み + BONSDOWN500コード発行</div>
+        <div style="padding:8px 0;border-bottom:1px solid var(--border);">2026-04-11 22:00 | Vera&John | メンテナンス告知検知 | 自動投稿準備中</div>
+        <div style="padding:8px 0;border-bottom:1px solid var(--border);">2026-04-10 18:45 | Eldoah | X上「出金遅い」キーワード検知 (12件) | 比較表ツイート済み</div>
+        <div style="padding:8px 0;">2026-04-09 10:00 | Casino Secret | ボーナス条件改悪 (賭け条件30x→40x) | 優位性投稿済み</div>
+      </div>
+    </div>
+
+    <!-- Manual Post -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">手動プロモ投稿</h3>
+        <div style="margin-bottom:12px;">
+          <select id="manual-type" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="competitor_down">競合ダウン告知</option>
+            <option value="maintenance">メンテナンス中アピール</option>
+            <option value="withdrawal_speed">出金スピード比較</option>
+            <option value="bonus_advantage">ボーナス優位性</option>
+            <option value="custom">カスタム投稿</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px;">
+          <input id="manual-competitor" type="text" placeholder="競合名（例: Bons Casino）" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <textarea id="manual-message" rows="4" placeholder="投稿内容を入力..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;resize:vertical;"></textarea>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);">プロモコード（自動生成可）</label>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <input id="manual-code" type="text" placeholder="BONSDOWN500" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+            <button onclick="document.getElementById('manual-code').value='PROMO'+Math.random().toString(36).slice(2,6).toUpperCase()" style="padding:8px 12px;background:var(--surface-alt);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text);">自動生成</button>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;font-size:12px;">
+          <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked id="manual-ch-x"> X (Twitter)</label>
+          <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" checked id="manual-ch-tg"> Telegram</label>
+          <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" id="manual-ch-push"> プッシュ通知</label>
+          <label style="display:flex;align-items:center;gap:6px;margin:4px 0;"><input type="checkbox" id="manual-ch-email"> メール配信</label>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="submitManualPromo('draft')" style="flex:1;padding:10px;background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text);">下書き保存</button>
+          <button onclick="submitManualPromo('pending')" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">承認申請</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:20px;">
+        <h3 style="margin-bottom:16px;font-size:15px;font-weight:700;">Telegram通知設定</h3>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Bot Token</label>
+          <input id="tg-bot-token" type="text" placeholder="123456:ABC-DEF..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:12px;font-family:monospace;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">グループID</label>
+          <input id="tg-group-id" type="text" placeholder="-1001234567890" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:12px;font-family:monospace;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">トピックID（任意、フォーラムグループ用）</label>
+          <input id="tg-topic-id" type="text" placeholder="123（空欄可）" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:12px;font-family:monospace;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">通知メッセージテンプレート</label>
+          <textarea id="tg-template" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:12px;resize:vertical;">[承認待ち] {type}: {competitor}
+{message}
+コード: {code}</textarea>
+        </div>
+        <button onclick="saveTelegramSettings()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Telegram設定を保存</button>
+        <button onclick="testTelegramNotification()" style="width:100%;margin-top:8px;padding:10px;background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text);">テスト送信</button>
+
+        <h3 style="margin-top:24px;margin-bottom:12px;font-size:15px;font-weight:700;">自動アクションテンプレート</h3>
+        <div style="font-size:12px;">
+          <div style="padding:10px;background:var(--surface-alt);border-radius:8px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>ダウン検知テンプレ</strong>
+              <button onclick="editActionTemplate('down')" style="padding:4px 10px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;">編集</button>
+            </div>
+            <div style="color:var(--text-secondary);margin-top:4px;font-size:11px;">{competitor}がダウン中! 今ならスロ天で遊べます。限定コード{code}で&#165;500ボーナス</div>
+          </div>
+          <div style="padding:10px;background:var(--surface-alt);border-radius:8px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>メンテ中テンプレ</strong>
+              <button onclick="editActionTemplate('maint')" style="padding:4px 10px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;">編集</button>
+            </div>
+            <div style="color:var(--text-secondary);margin-top:4px;font-size:11px;">{competitor}メンテ中でも遊べるのはスロ天! 今すぐプレイ</div>
+          </div>
+          <div style="padding:10px;background:var(--surface-alt);border-radius:8px;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>出金遅延テンプレ</strong>
+              <button onclick="editActionTemplate('withdraw')" style="padding:4px 10px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;">編集</button>
+            </div>
+            <div style="color:var(--text-secondary);margin-top:4px;font-size:11px;">スロ天は出金即時! {competitor}で待ってる間にスロ天で遊ぼう</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Settings Page ===== -->
+  <section class="page" id="page-settings">
+    <h1 class="page-title">設定</h1>
+
+    <!-- Alert Settings -->
+    <div class="settings-section">
+      <h2 class="settings-title">アラート設定</h2>
+      <div class="setting-row">
+        <div class="setting-label">黄色閾値: BET頻度減少</div>
+        <div class="setting-control">
+          <div class="slider-wrap">
+            <input type="range" min="10" max="90" value="50" id="yellow-threshold" oninput="document.getElementById('yellow-threshold-val').textContent=this.value+'%'" />
+            <span class="slider-value" id="yellow-threshold-val">50%</span>
+          </div>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">オレンジ閾値: ログインなし日数</div>
+        <div class="setting-control">
+          <input type="number" class="setting-input" value="3" min="1" max="30" style="width:80px" /> 日
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">赤閾値: VIPログインなし日数</div>
+        <div class="setting-control">
+          <input type="number" class="setting-input" value="5" min="1" max="30" style="width:80px" /> 日
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Templates -->
+    <div class="settings-section">
+      <h2 class="settings-title">メールテンプレート管理</h2>
+      <div class="template-list" id="template-list"></div>
+    </div>
+
+    <!-- SNS Account Settings -->
+    <div class="settings-section">
+      <h2 class="settings-title">SNSアカウント連携</h2>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">競合ダウン時の自動投稿やプロモ配信に使用するSNSアカウントを設定します。</p>
+
+      <!-- X (Twitter) -->
+      <div style="padding:16px;background:var(--surface-alt);border-radius:8px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <strong style="font-size:14px;">X (Twitter)</strong>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" id="sns-x-enabled" style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:0.3s;"></span></label>
+        </div>
+        <div class="setting-row"><div class="setting-label">API Key</div><div class="setting-control"><input type="text" id="sns-x-apikey" class="setting-input" placeholder="xai-..." style="width:100%;"></div></div>
+        <div class="setting-row"><div class="setting-label">API Secret</div><div class="setting-control"><input type="password" id="sns-x-apisecret" class="setting-input" placeholder="xxxxxxxx" style="width:100%;"></div></div>
+        <div class="setting-row"><div class="setting-label">Access Token</div><div class="setting-control"><input type="text" id="sns-x-token" class="setting-input" placeholder="1234567890-xxx" style="width:100%;"></div></div>
+        <div class="setting-row"><div class="setting-label">Access Secret</div><div class="setting-control"><input type="password" id="sns-x-tokensecret" class="setting-input" placeholder="xxxxxxxx" style="width:100%;"></div></div>
+        <div class="setting-row"><div class="setting-label">アカウント名</div><div class="setting-control"><input type="text" id="sns-x-account" class="setting-input" value="@sloten_official" style="width:100%;"></div></div>
+      </div>
+
+      <!-- Telegram -->
+      <div style="padding:16px;background:var(--surface-alt);border-radius:8px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <strong style="font-size:14px;">Telegram</strong>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" id="sns-tg-enabled" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--green);border-radius:12px;transition:0.3s;"></span></label>
+        </div>
+        <div class="setting-row"><div class="setting-label">Bot Token（投稿用）</div><div class="setting-control"><input type="text" id="sns-tg-bot" class="setting-input" placeholder="123456:ABC-DEF..." style="width:100%;font-family:monospace;"></div></div>
+        <div class="setting-row"><div class="setting-label">チャンネルID（投稿先）</div><div class="setting-control"><input type="text" id="sns-tg-channel" class="setting-input" placeholder="@sloten_promo or -1001234567890" style="width:100%;font-family:monospace;"></div></div>
+        <div class="setting-row"><div class="setting-label">通知グループID</div><div class="setting-control"><input type="text" id="sns-tg-notify" class="setting-input" placeholder="-1001234567890" style="width:100%;font-family:monospace;"></div></div>
+        <div class="setting-row"><div class="setting-label">トピックID（任意）</div><div class="setting-control"><input type="text" id="sns-tg-topic" class="setting-input" placeholder="空欄可" style="width:100%;font-family:monospace;"></div></div>
+      </div>
+
+      <!-- Discord -->
+      <div style="padding:16px;background:var(--surface-alt);border-radius:8px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <strong style="font-size:14px;">Discord</strong>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" id="sns-dc-enabled" style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:0.3s;"></span></label>
+        </div>
+        <div class="setting-row"><div class="setting-label">Webhook URL</div><div class="setting-control"><input type="text" id="sns-dc-webhook" class="setting-input" placeholder="https://discord.com/api/webhooks/..." style="width:100%;font-family:monospace;"></div></div>
+        <div class="setting-row"><div class="setting-label">チャンネル名</div><div class="setting-control"><input type="text" id="sns-dc-channel" class="setting-input" value="#promotions" style="width:100%;"></div></div>
+      </div>
+
+      <!-- Instagram -->
+      <div style="padding:16px;background:var(--surface-alt);border-radius:8px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <strong style="font-size:14px;">Instagram</strong>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" id="sns-ig-enabled" style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:0.3s;"></span></label>
+        </div>
+        <div class="setting-row"><div class="setting-label">Access Token</div><div class="setting-control"><input type="text" id="sns-ig-token" class="setting-input" placeholder="IGQ..." style="width:100%;font-family:monospace;"></div></div>
+        <div class="setting-row"><div class="setting-label">Business Account ID</div><div class="setting-control"><input type="text" id="sns-ig-account" class="setting-input" placeholder="17841400..." style="width:100%;font-family:monospace;"></div></div>
+      </div>
+
+      <!-- LINE -->
+      <div style="padding:16px;background:var(--surface-alt);border-radius:8px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <strong style="font-size:14px;">LINE（参考・カジノ非対応）</strong>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;"><input type="checkbox" id="sns-line-enabled" style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:0.3s;"></span></label>
+        </div>
+        <div class="setting-row"><div class="setting-label">Channel Access Token</div><div class="setting-control"><input type="text" id="sns-line-token" class="setting-input" placeholder="xxxxxxxx" style="width:100%;font-family:monospace;"></div></div>
+        <div class="setting-row"><div class="setting-label">Channel Secret</div><div class="setting-control"><input type="password" id="sns-line-secret" class="setting-input" placeholder="xxxxxxxx" style="width:100%;font-family:monospace;"></div></div>
+        <p style="font-size:11px;color:var(--red);margin-top:8px;">※ LINE公式はカジノ業界BAN対象。別ブランド用途のみ。</p>
+      </div>
+
+      <button onclick="saveSnsSettings()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">SNS設定を保存</button>
+    </div>
+
+    <!-- BigQuery -->
+    <div class="settings-section">
+      <h2 class="settings-title">BigQuery接続</h2>
+      <div class="setting-row">
+        <div class="setting-label">Project ID</div>
+        <div class="setting-control">
+          <code style="font-size:13px;background:var(--surface-alt);padding:4px 10px;border-radius:4px;">ethereal-mind-475206-r8</code>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Dataset</div>
+        <div class="setting-control">
+          <code style="font-size:13px;background:var(--surface-alt);padding:4px 10px;border-radius:4px;">sloten_native</code>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">接続ステータス</div>
+        <div class="setting-control">
+          <span class="connection-status status-disconnected">未接続</span>
+          <button class="btn btn-outline btn-sm" onclick="testConnection('BigQuery')">接続テスト</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">最終同期日時</div>
+        <div class="setting-control">
+          <span style="font-size:13px;color:var(--text-tertiary);">未同期 (BigQuery接続後に自動同期)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SendGrid -->
+    <div class="settings-section">
+      <h2 class="settings-title">SendGrid接続</h2>
+      <div class="setting-row">
+        <div class="setting-label">API Key</div>
+        <div class="setting-control">
+          <input type="password" class="setting-input" value="SG.xxxxxxxxxxxxxxxx" placeholder="API Key" />
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">接続ステータス</div>
+        <div class="setting-control">
+          <span class="connection-status status-disconnected">未接続</span>
+          <button class="btn btn-outline btn-sm" onclick="testConnection('SendGrid')">接続テスト</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telegram -->
+    <div class="settings-section">
+      <h2 class="settings-title">Telegram通知</h2>
+      <div class="setting-row">
+        <div class="setting-label">Bot Token</div>
+        <div class="setting-control">
+          <input type="password" class="setting-input" value="bot:xxxxxxxxxxxx" placeholder="Bot Token" />
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Chat ID</div>
+        <div class="setting-control">
+          <input type="text" class="setting-input" value="" placeholder="Chat ID" />
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label"></div>
+        <div class="setting-control">
+          <button class="btn btn-outline btn-sm" onclick="testConnection('Telegram')">テスト送信</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  Phase 1-4 Complete | データ: BigQuery実データ (VPS API経由)
+</footer>
+
+<script>
+// ===== Dashboard API =====
+var DASHBOARD_API_URL = "https://metabase.slotenpromotion.com/dashboard.json";
+var DASHBOARD_DATA = null;
+
+// DATA object - populated from API, with fallback defaults
+var DATA = {
+  kpi: [],
+  sparkline: [],
+  tasks: [],
+  alerts: { red: [], orange: [], yellow: [] },
+  journeySteps: [],
+  journeyUsers: [],
+  vipUsers: [],
+  emailTemplates: [
+    { name: "黄色アラート用", subject: "【Sloten】特別ボーナスのお知らせ", body: "{{username}} 様\n\nいつもSlotenをご利用いただきありがとうございます。\n\n最近お忙しいようですが、本日限定の特別ボーナスをご用意しました！\n\n▶ 入金額の50%ボーナス（最大¥50,000）\n\nぜひこの機会にお楽しみください。\n\nSloten サポートチーム" },
+    { name: "オレンジアラート用", subject: "【Sloten】お久しぶりです！復帰ボーナス", body: "{{username}} 様\n\nSlotenをしばらくご利用いただいていないようです。\n\n復帰ボーナスとして、次回入金時に100%マッチボーナスをプレゼント！\n\n▶ 最大¥100,000のボーナス\n▶ 有効期限: 7日間\n\nお待ちしております。\n\nSloten サポートチーム" },
+    { name: "赤アラート用", subject: "【Sloten】VIP専用 - パーソナルオファー", body: "{{username}} 様\n\nVIP会員として特別なオファーをご用意しました。\n\n▶ キャッシュバック率アップ: 15%\n▶ 専用ボーナス: ¥200,000\n▶ 専任サポートによるご案内\n\nお困りのことがございましたら、いつでもご連絡ください。\n\nSloten VIPサポート" },
+    { name: "FTDフォロー", subject: "【Sloten】初回入金ありがとうございます！", body: "{{username}} 様\n\n初回入金ありがとうございます！\n\nSlotenでのゲーム体験をさらに楽しんでいただくために：\n\n▶ 人気スロットTOP10をチェック\n▶ 初心者ガイドはこちら\n▶ 2回目入金で30%ボーナス\n\n楽しいゲーム体験をお届けします！\n\nSloten サポートチーム" },
+    { name: "2nd促進", subject: "【Sloten】2回目入金ボーナスのご案内", body: "{{username}} 様\n\n2回目のご入金をお待ちしております！\n\n▶ 入金額の30%ボーナス（最大¥80,000）\n▶ フリースピン50回プレゼント\n▶ 対象ゲーム: Heavens Shot / Gates of Olympus\n\nこの機会をお見逃しなく！\n\nSloten サポートチーム" },
+  ],
+};
+
+function loadDashboardData() {
+  fetch(DASHBOARD_API_URL)
+    .then(function(resp) {
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      return resp.json();
+    })
+    .then(function(data) {
+      DASHBOARD_DATA = data;
+
+      // Populate DATA from API
+      if (data.kpi && data.kpi.length) DATA.kpi = data.kpi;
+      if (data.sparkline && data.sparkline.length) DATA.sparkline = data.sparkline;
+      if (data.tasks && data.tasks.length) DATA.tasks = data.tasks;
+      if (data.alerts) DATA.alerts = data.alerts;
+      if (data.journey) {
+        if (data.journey.steps) DATA.journeySteps = data.journey.steps;
+        if (data.journey.users) DATA.journeyUsers = data.journey.users;
+      }
+      if (data.vip && data.vip.length) DATA.vipUsers = data.vip;
+
+      // Update alert badge counts
+      document.getElementById("badge-red").textContent = DATA.alerts.red.length;
+      document.getElementById("badge-orange").textContent = DATA.alerts.orange.length;
+      document.getElementById("badge-yellow").textContent = DATA.alerts.yellow.length;
+
+      // Update alert sub-tab counts
+      var subTabs = document.querySelectorAll(".sub-tab");
+      subTabs.forEach(function(tab) {
+        var level = tab.getAttribute("data-alert");
+        var count = tab.querySelector(".count");
+        if (count && DATA.alerts[level]) {
+          count.textContent = DATA.alerts[level].length;
+        }
+      });
+
+      // Re-render all tabs with real data
+      renderKPI();
+      renderTasks();
+      renderSparkline();
+      renderAlerts();
+      renderJourneyResults(DATA.journeyUsers);
+      renderStepSummary();
+      renderVIP();
+
+      // Update live labels
+      ["dashboard", "alerts", "journey", "vip"].forEach(function(tab) {
+        var label = document.getElementById(tab + "-live-label");
+        if (label) {
+          label.textContent = "LIVE";
+          label.style.background = "#22c55e";
+        }
+      });
+
+      console.log("Dashboard data loaded from API:", data.generated_at);
+    })
+    .catch(function(err) {
+      console.error("Dashboard API fetch failed:", err);
+      ["dashboard", "alerts", "journey", "vip"].forEach(function(tab) {
+        var label = document.getElementById(tab + "-live-label");
+        if (label) {
+          label.textContent = "ERROR";
+          label.style.background = "#ef4444";
+        }
+      });
+    });
+}
+
+// Tab name map
+var TAB_NAMES = {
+  dashboard: "ダッシュボード",
+  alerts: "アラート",
+  analytics: "CJ自動メール",
+  journey: "ジャーニー管理",
+  vip: "VIP管理",
+  push: "プッシュ通知",
+  competitor: "競合監視",
+  settings: "設定",
+};
+
+// ===== Theme =====
+function initTheme() {
+  var saved = localStorage.getItem("sloten-theme");
+  if (saved === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    updateThemeIcon(true);
+  }
+}
+
+function toggleTheme() {
+  var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  if (isDark) {
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("sloten-theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    localStorage.setItem("sloten-theme", "dark");
+  }
+  updateThemeIcon(!isDark);
+}
+
+function updateThemeIcon(dark) {
+  document.querySelector(".icon-sun").style.display = dark ? "none" : "block";
+  document.querySelector(".icon-moon").style.display = dark ? "block" : "none";
+}
+
+// ===== Toast =====
+function showToast(message, type) {
+  type = type || "success";
+  var container = document.getElementById("toast-container");
+  var toast = document.createElement("div");
+  toast.className = "toast " + type;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(function() {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+  }, 3000);
+}
+
+// ===== Modal =====
+function openModal(html) {
+  document.getElementById("modal-body").innerHTML = html;
+  document.getElementById("modal-overlay").classList.add("open");
+}
+function closeModal(e) {
+  if (e.target === document.getElementById("modal-overlay")) {
+    document.getElementById("modal-overlay").classList.remove("open");
+  }
+}
+function closeModalForce() {
+  document.getElementById("modal-overlay").classList.remove("open");
+}
+
+// ===== Tab Navigation =====
+var currentTab = "dashboard";
+function switchTab(tab) {
+  // Show skeleton briefly
+  var targetPage = document.getElementById("page-" + tab);
+  if (targetPage && tab !== currentTab) {
+    targetPage.style.opacity = "0";
+    setTimeout(function() { targetPage.style.opacity = "1"; }, 50);
+  }
+
+  currentTab = tab;
+  document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+  var tabBtn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+  if (tabBtn) tabBtn.classList.add("active");
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("active"); });
+  var page = document.getElementById("page-" + tab);
+  if (page) page.classList.add("active");
+
+  // Update breadcrumb
+  document.getElementById("breadcrumb-current").textContent = TAB_NAMES[tab] || tab;
+
+  history.pushState({ tab: tab }, "", "/" + tab);
+}
+
+window.addEventListener("popstate", function(e) {
+  if (e.state && e.state.tab) switchTab(e.state.tab);
+});
+
+// Init tab from URL
+(function() {
+  var path = location.pathname.replace("/", "");
+  if (Object.keys(TAB_NAMES).indexOf(path) !== -1) {
+    switchTab(path);
+  }
+})();
+
+// ===== Alert Sub-tabs =====
+function switchAlertTab(level) {
+  document.querySelectorAll(".sub-tab").forEach(function(b) {
+    b.classList.remove("active-red", "active-orange", "active-yellow");
+  });
+  document.querySelector('.sub-tab[data-alert="' + level + '"]').classList.add("active-" + level);
+  document.querySelectorAll(".alert-list").forEach(function(l) { l.classList.remove("active"); });
+  document.getElementById("alert-list-" + level).classList.add("active");
+}
+
+// ===== Render KPI =====
+function renderKPI() {
+  var grid = document.getElementById("kpi-grid");
+  grid.innerHTML = DATA.kpi.map(function(k) {
+    var diff = k.value - k.yesterday;
+    var pct = ((diff / k.yesterday) * 100).toFixed(1);
+    var isUp = diff >= 0;
+    var displayVal = k.format === "yen"
+      ? "\u00a5" + k.value.toLocaleString()
+      : k.value.toLocaleString();
+    return '<div class="kpi-card">' +
+      '<div class="kpi-label">' + k.label + '</div>' +
+      '<div class="kpi-value">' + displayVal + '</div>' +
+      '<div class="kpi-compare ' + (isUp ? "up" : "down") + '">' +
+        '<span class="' + (isUp ? "arrow-up" : "arrow-down") + '"></span>' +
+        (isUp ? "+" : "") + pct + '% vs 昨日' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+// ===== Render Tasks =====
+function renderTasks() {
+  var list = document.getElementById("task-list");
+  var countEl = document.getElementById("task-count");
+  var pending = DATA.tasks.filter(function(t) { return !t.done; }).length;
+  countEl.textContent = pending + "件";
+  list.innerHTML = DATA.tasks.map(function(t, i) {
+    var tierClass = "tier-" + t.tier;
+    return '<div class="task-item">' +
+      '<div class="task-info">' +
+        '<div class="task-user">' + t.user + ' <span class="task-tier ' + tierClass + '">' + t.tier.toUpperCase() + '</span></div>' +
+        '<div class="task-desc">' + t.desc + '</div>' +
+      '</div>' +
+      '<div class="btn-group">' +
+        (t.done
+          ? '<button class="btn btn-done btn-sm">対応済み</button>'
+          : '<button class="btn btn-primary btn-sm" onclick="markTaskDone(' + i + ')">対応済み</button>'
+        ) +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function markTaskDone(i) {
+  DATA.tasks[i].done = true;
+  renderTasks();
+  showToast("タスクを対応済みにしました");
+}
+
+// ===== Render Sparkline =====
+function renderSparkline() {
+  var el = document.getElementById("sparkline");
+  var max = Math.max.apply(null, DATA.sparkline.map(function(s) { return s.val; }));
+  el.innerHTML = DATA.sparkline.map(function(s) {
+    var h = (s.val / max) * 70;
+    return '<div class="spark-bar-wrap">' +
+      '<span class="spark-value">' + s.val + '</span>' +
+      '<div class="spark-bar" style="height:' + h + 'px"></div>' +
+      '<span class="spark-label">' + s.day + '</span>' +
+    '</div>';
+  }).join("");
+}
+
+// ===== Render Alerts =====
+function renderAlerts() {
+  ["red", "orange", "yellow"].forEach(function(level) {
+    var container = document.getElementById("alert-list-" + level);
+    var sevClass = "sev-" + level;
+    var items = DATA.alerts[level] || [];
+    if (items.length === 0) {
+      container.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-tertiary)">該当するアラートはありません</div>';
+      return;
+    }
+    container.innerHTML = items.map(function(a, i) {
+      var displayId = a.id || a.userId || "-";
+      var depInfo = a.depositCount !== undefined ? '入金' + a.depositCount + '回' : '';
+      var ggrInfo = a.ggr ? ' / GGR \u00a5' + a.ggr.toLocaleString() : '';
+      return '<div class="alert-card" id="alert-' + level + '-' + i + '">' +
+        '<div class="alert-card-row">' +
+          '<input type="checkbox" class="alert-checkbox" data-level="' + level + '" data-idx="' + i + '" onchange="updateSelectedCount()" />' +
+          '<div class="alert-severity ' + sevClass + '"></div>' +
+          '<div class="alert-details">' +
+            '<div class="alert-meta">' +
+              '<div class="alert-meta-item">' +
+                '<span class="alert-meta-label">ユーザー:</span>' +
+                '<span class="alert-meta-value">' + displayId + '</span>' +
+              '</div>' +
+              '<div class="alert-meta-item">' +
+                '<span class="alert-meta-label">最終ログイン:</span>' +
+                '<span class="alert-meta-value">' + (a.lastLogin || "-") + '</span>' +
+              '</div>' +
+              (depInfo ? '<div class="alert-meta-item"><span class="alert-meta-label">入金:</span><span class="alert-meta-value">' + depInfo + ggrInfo + '</span></div>' : '') +
+              '<div class="alert-meta-item">' +
+                '<span class="alert-meta-label">ティア:</span>' +
+                '<span class="alert-meta-value">' + (a.tier || "-") + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="alert-actions">' +
+              '<button class="btn btn-outline btn-sm" onclick="openSendTemplateModal(\'' + displayId + '\')">テンプレメール送信</button>' +
+              '<button class="btn btn-primary btn-sm" id="alert-btn-' + level + '-' + i + '" onclick="markAlertDone(\'' + level + '\',' + i + ')">対応済み</button>' +
+              '<input class="memo-input" placeholder="メモを入力..." />' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  });
+}
+
+function openSendTemplateModal(userId) {
+  var options = DATA.emailTemplates.map(function(t, i) {
+    return '<option value="' + i + '">' + t.name + '</option>';
+  }).join("");
+
+  var html = '<div class="modal-title">テンプレメール送信</div>' +
+    '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">送信先: <strong>' + userId + '</strong></p>' +
+    '<div style="margin-bottom:12px;">' +
+      '<label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">テンプレート選択</label>' +
+      '<select class="step-select" style="width:100%" id="template-select" onchange="previewTemplate()">' + options + '</select>' +
+    '</div>' +
+    '<div id="template-preview-area"></div>' +
+    '<button class="btn btn-primary" style="margin-top:16px;width:100%;" onclick="sendTemplateEmail(\'' + userId + '\')">送信</button>';
+  openModal(html);
+  previewTemplate();
+}
+
+function previewTemplate() {
+  var sel = document.getElementById("template-select");
+  if (!sel) return;
+  var idx = parseInt(sel.value);
+  var t = DATA.emailTemplates[idx];
+  var area = document.getElementById("template-preview-area");
+  if (area) {
+    area.innerHTML = '<div style="font-size:12px;font-weight:600;margin-bottom:4px;">件名: ' + t.subject + '</div>' +
+      '<div class="template-preview">' + t.body.replace(/\n/g, '<br>') + '</div>';
+  }
+}
+
+function sendTemplateEmail(userId) {
+  closeModalForce();
+  showToast(userId + " へテンプレメールを送信しました (デモ)", "success");
+}
+
+function markAlertDone(level, i) {
+  var btn = document.getElementById("alert-btn-" + level + "-" + i);
+  btn.className = "btn btn-done btn-sm";
+  btn.textContent = "対応済み";
+  btn.onclick = null;
+  showToast("アラートを対応済みにしました");
+}
+
+// Bulk actions
+function toggleSelectAllAlerts(checkbox) {
+  var all = document.querySelectorAll(".alert-checkbox");
+  all.forEach(function(cb) { cb.checked = checkbox.checked; });
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  var checked = document.querySelectorAll(".alert-checkbox:checked").length;
+  document.getElementById("selected-count").textContent = checked + "件選択中";
+}
+
+function bulkMarkDone() {
+  var checked = document.querySelectorAll(".alert-checkbox:checked");
+  if (checked.length === 0) {
+    showToast("アラートを選択してください", "info");
+    return;
+  }
+  checked.forEach(function(cb) {
+    var level = cb.getAttribute("data-level");
+    var idx = cb.getAttribute("data-idx");
+    var btn = document.getElementById("alert-btn-" + level + "-" + idx);
+    if (btn) {
+      btn.className = "btn btn-done btn-sm";
+      btn.textContent = "対応済み";
+      btn.onclick = null;
+    }
+    cb.checked = false;
+  });
+  document.getElementById("select-all-alerts").checked = false;
+  updateSelectedCount();
+  showToast(checked.length + "件のアラートを一括対応済みにしました");
+}
+
+// ===== CJ Task Data (fetched from VPS) =====
+var CJ_TASKS = [];
+var CJ_DATA = null;
+var CJ_API_URL = "https://metabase.slotenpromotion.com/cj-results.json";
+
+function getCJPriorityClass(id) {
+  if (id === "P0") return "p0";
+  if (id === "P1") return "p1";
+  if (id === "P2") return "p2";
+  if (id === "P3") return "p3";
+  if (id.match(/^P[4-8]$/)) return "p4-p8";
+  if (id.match(/^P(9|1[0-4])$/)) return "p9-p14";
+  if (id.match(/^P1[5-9]$/)) return "p15-p19";
+  if (id.match(/^P2[0-2]$/)) return "p20-p22";
+  if (id.match(/^P2[3-6]$/)) return "p23-p26";
+  if (id === "P-SMS") return "p-sms";
+  return "";
+}
+
+function renderCJDashboard() {
+  var modeEl = document.getElementById("cj-mode-indicator");
+  var statsEl = document.getElementById("cj-summary-stats");
+  var gridEl = document.getElementById("cj-task-grid");
+  var labelEl = document.getElementById("cj-live-label");
+
+  // Show loading state
+  modeEl.innerHTML = "&#x23F3; データ読み込み中...";
+  statsEl.innerHTML = "";
+  gridEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary)">BigQuery からデータ取得中...</div>';
+
+  fetch(CJ_API_URL)
+    .then(function(resp) {
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      return resp.json();
+    })
+    .then(function(data) {
+      CJ_DATA = data;
+      CJ_TASKS = data.tasks || [];
+
+      // Mode indicator with timestamp
+      var genAt = data.generated_at || "";
+      var genDate = genAt ? new Date(genAt) : null;
+      var timeStr = genDate ? genDate.toLocaleString("ja-JP", {timeZone: "Asia/Tokyo"}) : "不明";
+      modeEl.innerHTML = "&#x1F7E2; ドライランモード - BigQuery実データ (最終更新: " + timeStr + ")";
+
+      // Summary stats
+      var summary = data.summary || {};
+      var activeTasks = CJ_TASKS.filter(function(t) { return t.targetCount > 0; }).length;
+      statsEl.innerHTML =
+        '<div class="cj-stat-card"><div class="cj-stat-value">' + (summary.total_tasks || 28) + '</div><div class="cj-stat-label">CJタスク総数</div></div>' +
+        '<div class="cj-stat-card"><div class="cj-stat-value">' + activeTasks + '</div><div class="cj-stat-label">対象ありタスク</div></div>' +
+        '<div class="cj-stat-card"><div class="cj-stat-value">' + (summary.total_targets || 0).toLocaleString() + '</div><div class="cj-stat-label">本日の対象ユーザー</div></div>' +
+        '<div class="cj-stat-card"><div class="cj-stat-value">' + (summary.total_users || 0).toLocaleString() + '</div><div class="cj-stat-label">総ユーザー数</div></div>';
+
+      // Label
+      if (labelEl) {
+        labelEl.textContent = "LIVE";
+        labelEl.style.background = "#22c55e";
+      }
+
+      // Task grid - sort by targetCount descending
+      var sortedTasks = CJ_TASKS.slice().sort(function(a, b) { return b.targetCount - a.targetCount; });
+      gridEl.innerHTML = sortedTasks.map(function(task) {
+        var pClass = getCJPriorityClass(task.id);
+        var countColor = task.targetCount > 0 ? "color:#ef4444;font-weight:700" : "color:var(--text-tertiary)";
+        return '<div class="cj-task-card" onclick="openCJModal(\'' + task.id + '\')" style="' + (task.targetCount === 0 ? 'opacity:0.5' : '') + '">' +
+          '<div class="cj-task-header">' +
+            '<span class="cj-task-priority ' + pClass + '">' + task.id + '</span>' +
+            '<span class="cj-task-status ' + task.status + '">' + (task.targetCount > 0 ? "対象あり" : "対象なし") + '</span>' +
+          '</div>' +
+          '<div class="cj-task-name">' + task.name + '</div>' +
+          '<div class="cj-task-desc">' + task.desc + '</div>' +
+          '<div class="cj-task-meta">' +
+            '<span>対象: <span class="cj-task-target-count" style="' + countColor + '">' + task.targetCount + '名</span></span>' +
+            '<span>' + task.key + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    })
+    .catch(function(err) {
+      console.error("CJ data fetch failed:", err);
+      modeEl.innerHTML = "&#x1F534; データ取得失敗 - " + err.message;
+      gridEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red)">データの取得に失敗しました。VPS接続を確認してください。<br><br><button onclick="renderCJDashboard()" style="padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;">再試行</button></div>';
+      if (labelEl) {
+        labelEl.textContent = "ERROR";
+        labelEl.style.background = "#ef4444";
+      }
+    });
+}
+
+function openCJModal(taskId) {
+  var task = CJ_TASKS.find(function(t) { return t.id === taskId; });
+  if (!task) return;
+
+  document.getElementById("cj-modal-title").textContent = task.id + ": " + task.name + " - " + task.desc;
+
+  // User list from real data
+  var users = task.users || [];
+  var usersHtml = '<h3>対象ユーザー (' + users.length + '名)</h3>';
+  if (users.length === 0) {
+    usersHtml += '<div style="padding:12px;color:var(--text-tertiary);text-align:center;">対象ユーザーなし</div>';
+  } else {
+    users.forEach(function(u) {
+      var statusLabel = u.status || "-";
+      var depositInfo = "入金" + (u.deposit_count || 0) + "回";
+      var loginInfo = u.days_since_last_login !== undefined ? "最終ログイン " + u.days_since_last_login + "日前" : "";
+      var ggrInfo = u.total_ggr ? " / GGR " + Math.round(u.total_ggr).toLocaleString() + "円" : "";
+      usersHtml += '<div class="cj-user-row">' +
+        '<span class="cj-user-id">' + (u.user_name || u.user_id || "-") + '</span>' +
+        '<span class="cj-user-name" style="font-size:11px;color:var(--text-tertiary)">' + (u.email || "") + '</span>' +
+        '<span class="cj-user-detail">' + statusLabel + ' / ' + depositInfo + ' / ' + loginInfo + ggrInfo + '</span>' +
+      '</div>';
+    });
+  }
+  document.getElementById("cj-modal-users").innerHTML = usersHtml;
+
+  // Email preview: iframe + open-in-new-tab link
+  var previewUrl = task.url || "about:blank";
+  var iframe = document.getElementById("cj-modal-iframe");
+  iframe.src = previewUrl;
+  var link = document.getElementById("cj-modal-preview-link");
+  if (link) link.href = previewUrl;
+
+  // Store current task id for test-send button
+  window.CJ_CURRENT_TASK = task;
+
+  document.getElementById("cj-modal-overlay").classList.add("open");
+}
+
+function sendCJTestEmail() {
+  var task = window.CJ_CURRENT_TASK;
+  if (!task) { alert('タスクが選択されていません'); return; }
+  var btn = document.getElementById('cj-modal-send-test');
+  var orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ 送信中…';
+  fetch('/api/email/send-test', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ taskId: task.id, to: 'koni.tanaka@gmail.com' })
+  })
+  .then(function(r) { return r.json().then(function(j) { return {ok: r.ok, body: j}; }); })
+  .then(function(res) {
+    btn.disabled = false;
+    btn.textContent = orig;
+    if (res.ok) {
+      showToast('✅ ' + (res.body.message || 'テスト送信成功'), 'success');
+    } else {
+      showToast('❌ ' + (res.body.error || '送信失敗'), 'error');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = orig;
+    showToast('❌ ネットワークエラー: ' + err.message, 'error');
+  });
+}
+
+function closeCJModal(event) {
+  if (event && event.target && event.target !== document.getElementById("cj-modal-overlay")) return;
+  document.getElementById("cj-modal-overlay").classList.remove("open");
+  document.getElementById("cj-modal-iframe").src = "about:blank";
+}
+
+// ===== Render Journey =====
+var JOURNEY_STEP_LABELS = ["登録完了", "FTD完了", "2nd入金", "3rd入金", "アクティブ", "休眠", "VIP"];
+
+function searchJourneyUser() {
+  var query = document.getElementById("journey-search").value.toLowerCase().trim();
+  var results = DATA.journeyUsers;
+  if (query) {
+    results = DATA.journeyUsers.filter(function(u) {
+      return (u.id || "").toLowerCase().indexOf(query) !== -1 ||
+             (u.name || "").toLowerCase().indexOf(query) !== -1 ||
+             (u.email || "").toLowerCase().indexOf(query) !== -1;
+    });
+  }
+  renderJourneyResults(results);
+}
+
+function renderJourneyResults(users) {
+  var el = document.getElementById("journey-results");
+  if (!users || users.length === 0) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-tertiary)">該当するユーザーが見つかりません</div>';
+    return;
+  }
+  el.innerHTML = users.map(function(u) {
+    var stepIdx = u.currentStep || 0;
+    var progressPct = ((stepIdx + 1) / JOURNEY_STEP_LABELS.length * 100).toFixed(0);
+    var stepLabel = u.stepLabel || JOURNEY_STEP_LABELS[stepIdx] || "-";
+
+    var loginStr = u.daysSinceLogin !== undefined
+      ? (u.daysSinceLogin === 0 ? "今日" : u.daysSinceLogin + "日前")
+      : (u.lastLogin || "-");
+
+    var detailItems = [];
+    if (u.depositCount !== undefined) detailItems.push("入金" + u.depositCount + "回");
+    if (u.vipLevel) detailItems.push("VIP Lv." + u.vipLevel);
+    if (u.ggr) detailItems.push("GGR \u00a5" + u.ggr.toLocaleString());
+
+    var stepOptions = JOURNEY_STEP_LABELS.map(function(s, i) {
+      return '<option value="' + i + '"' + (i === stepIdx ? ' selected' : '') + '>' + s + '</option>';
+    }).join("");
+
+    return '<div class="user-card">' +
+      '<div class="user-card-header">' +
+        '<div class="user-card-info">' +
+          '<div><span class="label">ユーザーID:</span><span class="value">' + (u.id || "-") + '</span></div>' +
+          '<div><span class="label">ユーザー名:</span><span class="value">' + (u.name || "-") + '</span></div>' +
+          '<div><span class="label">メール:</span><span class="value">' + (u.email || "-") + '</span></div>' +
+          '<div><span class="label">最終ログイン:</span><span class="value">' + loginStr + '</span></div>' +
+          '<div><span class="label">ステータス:</span><span class="value">' + (u.status || "-") + '</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="margin-bottom:8px;font-size:13px;font-weight:600;">現在のジャーニーステップ: ' + stepLabel +
+        (detailItems.length ? ' <span style="color:var(--text-secondary);font-weight:400;">(' + detailItems.join(" / ") + ')</span>' : '') +
+      '</div>' +
+      '<div class="progress-bar-wrap">' +
+        '<div class="progress-bar-fill" style="width:' + progressPct + '%">' +
+          '<span class="progress-bar-text">' + progressPct + '%</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="progress-steps">' +
+        JOURNEY_STEP_LABELS.map(function(s, i) {
+          var style = i <= stepIdx ? 'color:var(--primary);font-weight:600' : '';
+          return '<span style="' + style + '">' + s + '</span>';
+        }).join('') +
+      '</div>' +
+      '<div style="margin-top:12px;display:flex;align-items:center;gap:12px;">' +
+        '<span style="font-size:13px;font-weight:500;">ステップを手動変更:</span>' +
+        '<select class="step-select" onchange="changeStep(\'' + (u.id || "") + '\', this.value)">' + stepOptions + '</select>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function changeStep(userId, stepIdx) {
+  showToast(userId + " のステップを「" + JOURNEY_STEP_LABELS[stepIdx] + "」に変更しました (デモ)", "success");
+}
+
+function renderStepSummary() {
+  var el = document.getElementById("step-bars");
+  var steps = DATA.journeySteps;
+  if (!steps || steps.length === 0) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-tertiary)">ステップデータなし</div>';
+    return;
+  }
+  var max = Math.max.apply(null, steps.map(function(s) { return s.count; }));
+  if (max === 0) max = 1;
+  el.innerHTML = steps.map(function(s) {
+    var pct = (s.count / max * 100).toFixed(0);
+    return '<div class="step-bar-item">' +
+      '<div class="step-bar-label">' + s.label + '</div>' +
+      '<div class="step-bar-track">' +
+        '<div class="step-bar-fill" style="width:' + pct + '%"><span>' + s.count.toLocaleString() + '</span></div>' +
+      '</div>' +
+      '<div class="step-bar-count">' + s.count.toLocaleString() + '</div>' +
+    '</div>';
+  }).join("");
+}
+
+// ===== Render VIP =====
+function renderVIP() {
+  var statsEl = document.getElementById("vip-stats");
+  var users = DATA.vipUsers || [];
+  var totalVip = users.length;
+  var totalDeposit = users.reduce(function(s, u) { return s + (u.monthDeposit || 0); }, 0);
+  var avgArpu = totalVip > 0 ? Math.round(totalDeposit / totalVip) : 0;
+  var churnCount = users.filter(function(u) { return u.risk === "高"; }).length;
+
+  statsEl.innerHTML = [
+    { label: "総VIP数", value: totalVip + "名" },
+    { label: "平均ARPU", value: "\u00a5" + avgArpu.toLocaleString() },
+    { label: "今月離脱リスク(高)", value: churnCount + "名" },
+  ].map(function(s) {
+    return '<div class="kpi-card"><div class="kpi-label">' + s.label + '</div><div class="kpi-value" style="font-size:24px">' + s.value + '</div></div>';
+  }).join("");
+
+  var tbody = document.getElementById("vip-tbody");
+  tbody.innerHTML = users.map(function(u, i) {
+    var tier = u.tier || "Bronze";
+    var tierClass = tier === "Platinum" ? "tier-vip" : tier === "Gold" ? "tier-gold" : tier === "Silver" ? "tier-silver" : "tier-bronze";
+    var risk = u.risk || "低";
+    var riskClass = risk === "高" ? "risk-high" : risk === "中" ? "risk-med" : "risk-low";
+    var tg = u.tg || "未招待";
+    var tgClass = tg === "参加" ? "tg-joined" : tg === "招待済み" ? "tg-invited" : "tg-none";
+    var displayId = u.name || u.id || "-";
+    var vipLabel = tier + (u.vipLevel ? " (Lv." + u.vipLevel + ")" : "");
+
+    return '<tr>' +
+      '<td><strong>' + displayId + '</strong></td>' +
+      '<td><span class="task-tier ' + tierClass + '">' + vipLabel + '</span></td>' +
+      '<td>\u00a5' + (u.monthDeposit || 0).toLocaleString() + '</td>' +
+      '<td>\u00a5' + (u.monthBet || 0).toLocaleString() + '</td>' +
+      '<td>' + (u.lastLogin || "-") + '</td>' +
+      '<td><span class="' + riskClass + '">' + risk + '</span></td>' +
+      '<td><span class="' + tgClass + '">' + tg + '</span></td>' +
+      '<td>' +
+        '<div class="btn-group" style="flex-wrap:wrap">' +
+          (tg !== "参加" ? '<button class="btn btn-outline btn-sm" onclick="sendTgInvite(\'' + (u.id || "") + '\')">TG招待送信</button>' : '') +
+          '<button class="btn btn-outline btn-sm" onclick="openSendTemplateModal(\'' + (u.id || "") + '\')">個別メール</button>' +
+          '<button class="vip-memo-toggle" onclick="toggleVipMemo(' + i + ')">メモ</button>' +
+        '</div>' +
+        '<div class="vip-memo-content" id="vip-memo-' + i + '">' +
+          '<input class="memo-input" style="min-width:100%;margin-top:4px" placeholder="メモを入力..." />' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join("");
+}
+
+function sendTgInvite(userId) {
+  showToast(userId + " にTG招待を送信しました (デモ)", "success");
+}
+
+function toggleVipMemo(idx) {
+  var el = document.getElementById("vip-memo-" + idx);
+  el.classList.toggle("open");
+}
+
+// ===== Render Settings Templates =====
+function renderTemplates() {
+  var el = document.getElementById("template-list");
+  el.innerHTML = DATA.emailTemplates.map(function(t, i) {
+    return '<div class="template-item">' +
+      '<div class="template-name">' + t.name + '</div>' +
+      '<div class="template-actions">' +
+        '<button class="btn btn-outline btn-sm" onclick="previewTemplateModal(' + i + ')">プレビュー</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="editTemplateModal(' + i + ')">編集</button>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function previewTemplateModal(idx) {
+  var t = DATA.emailTemplates[idx];
+  var html = '<div class="modal-title">' + t.name + '</div>' +
+    '<div style="font-size:13px;font-weight:600;margin-bottom:8px;">件名: ' + t.subject + '</div>' +
+    '<div class="template-preview">' + t.body.replace(/\n/g, '<br>') + '</div>';
+  openModal(html);
+}
+
+function editTemplateModal(idx) {
+  var t = DATA.emailTemplates[idx];
+  var html = '<div class="modal-title">' + t.name + ' - 編集</div>' +
+    '<div style="margin-bottom:12px;">' +
+      '<label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">件名</label>' +
+      '<input class="setting-input" style="width:100%" value="' + t.subject + '" />' +
+    '</div>' +
+    '<div style="margin-bottom:12px;">' +
+      '<label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">本文</label>' +
+      '<textarea class="memo-input" style="min-width:100%;min-height:200px;resize:vertical">' + t.body + '</textarea>' +
+    '</div>' +
+    '<button class="btn btn-primary" style="width:100%;" onclick="closeModalForce();showToast(\'テンプレートを保存しました (デモ)\')">保存</button>';
+  openModal(html);
+}
+
+function testConnection(service) {
+  showToast(service + " 接続テスト中... (デモ)", "info");
+  setTimeout(function() {
+    showToast(service + " 接続テスト完了 - 接続成功 (デモ)", "success");
+  }, 1500);
+}
+
+// ===== Send Preview (uses CJ data) =====
+var SEND_PREVIEW_TARGETS = [];
+
+function buildSendPreviewFromCJ() {
+  // Build send preview targets from CJ data if available
+  if (!CJ_DATA || !CJ_DATA.tasks) return [];
+  var targets = [];
+  var priority = 1;
+  CJ_DATA.tasks.forEach(function(task) {
+    if (task.targetCount === 0) return;
+    var users = (task.users || []).slice(0, 5); // max 5 per task for preview
+    users.forEach(function(u) {
+      targets.push({
+        userId: u.user_id || "",
+        userName: u.user_name || "",
+        status: u.status || "",
+        emailType: task.key,
+        emailLabel: task.name + " - " + task.desc,
+        priority: priority,
+        reason: task.desc + " (" + task.id + ")",
+      });
+      priority++;
+    });
+  });
+  return targets;
+}
+
+function executeSendPreview() {
+  var btn = document.getElementById("send-preview-btn");
+  var area = document.getElementById("send-preview-area");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>プレビュー生成中...';
+  area.className = "send-preview-hidden";
+
+  setTimeout(function() {
+    SEND_PREVIEW_TARGETS = buildSendPreviewFromCJ();
+    btn.disabled = false;
+    btn.innerHTML = "送信プレビュー実行";
+    area.className = "";
+    renderSendPreview();
+  }, 1200);
+}
+
+function renderSendPreview() {
+  var area = document.getElementById("send-preview-area");
+  var targets = SEND_PREVIEW_TARGETS;
+  var totalCount = targets.length;
+
+  // Breakdown by email type
+  var breakdown = {};
+  targets.forEach(function(t) {
+    if (!breakdown[t.emailType]) {
+      breakdown[t.emailType] = { label: t.emailLabel, count: 0 };
+    }
+    breakdown[t.emailType].count++;
+  });
+
+  var breakdownHtml = Object.keys(breakdown).map(function(key) {
+    var b = breakdown[key];
+    return '<span class="breakdown-tag"><span>' + b.label + '</span><span class="tag-count">' + b.count + '件</span></span>';
+  }).join("");
+
+  var tableRows = targets.map(function(t, i) {
+    return '<tr>' +
+      '<td><strong>' + t.userId + '</strong></td>' +
+      '<td>' + t.userName + '</td>' +
+      '<td><code style="font-size:12px;background:var(--surface-alt);padding:2px 6px;border-radius:3px;">' + t.status + '</code></td>' +
+      '<td>' + t.emailLabel + '</td>' +
+      '<td style="text-align:center;font-weight:600;">' + t.priority + '</td>' +
+      '<td style="font-size:12px;color:var(--text-secondary);">' + t.reason + '</td>' +
+      '<td><button class="btn btn-outline btn-sm" id="send-test-btn-' + i + '" onclick="sendTestEmail(' + i + ')">送信テスト</button></td>' +
+    '</tr>';
+  }).join("");
+
+  area.innerHTML =
+    '<div class="send-preview-section">' +
+      '<div class="send-preview-header">' +
+        '<h2 style="font-size:18px;font-weight:700;">送信プレビュー結果</h2>' +
+        '<button class="btn btn-outline" onclick="downloadSendPreviewCSV()">送信対象一覧をCSVダウンロード</button>' +
+      '</div>' +
+      '<div class="send-preview-stats">' +
+        '<div class="send-preview-stat">' +
+          '<div class="stat-label">送信対象者</div>' +
+          '<div class="stat-value">' + totalCount + '人</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:13px;font-weight:600;margin-bottom:8px;">メール種類別内訳</div>' +
+      '<div class="send-preview-breakdown">' + breakdownHtml + '</div>' +
+      '<div class="send-preview-table-wrap">' +
+        '<table class="data-table">' +
+          '<thead><tr>' +
+            '<th>ユーザーID</th>' +
+            '<th>ユーザー名</th>' +
+            '<th>現在ステータス</th>' +
+            '<th>送信予定メール</th>' +
+            '<th>優先度</th>' +
+            '<th>理由</th>' +
+            '<th>操作</th>' +
+          '</tr></thead>' +
+          '<tbody>' + tableRows + '</tbody>' +
+        '</table>' +
+      '</div>' +
+    '</div>';
+}
+
+function sendTestEmail(idx) {
+  var btn = document.getElementById("send-test-btn-" + idx);
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+  setTimeout(function() {
+    btn.className = "btn btn-fail btn-sm";
+    btn.innerHTML = "失敗";
+    btn.onclick = null;
+    showToast("送信失敗（ドライランモード）- 本番環境でSendGrid APIキーを設定してください", "error");
+  }, 800);
+}
+
+function downloadSendPreviewCSV() {
+  var header = "ユーザーID,ユーザー名,現在ステータス,送信予定メール,優先度,理由";
+  var rows = SEND_PREVIEW_TARGETS.map(function(t) {
+    return [t.userId, t.userName, t.status, t.emailLabel, t.priority, '"' + t.reason + '"'].join(",");
+  });
+  var csv = "\uFEFF" + header + "\n" + rows.join("\n");
+  var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "send_preview_" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("CSVをダウンロードしました", "success");
+}
+
+// ===== Init =====
+initTheme();
+renderCJDashboard();
+renderTemplates();
+
+// Load real data from dashboard API - this will render all tabs
+loadDashboardData();
+
+// ===== Push Notification =====
+function sendPushNotification() {
+  var segment = document.getElementById('push-segment').value;
+  var title = document.getElementById('push-title').value;
+  var body = document.getElementById('push-body').value;
+  var image = document.getElementById('push-image').value;
+  var url = document.getElementById('push-url').value;
+  if (!title || !body) { alert('タイトルと本文を入力してください'); return; }
+  // In production: call push notification API
+  alert('プッシュ通知を送信しました\n\n対象: ' + segment + '\nタイトル: ' + title + '\n本文: ' + body + (image ? '\n画像: あり' : '') + '\nURL: ' + url);
+  document.getElementById('push-title').value = '';
+  document.getElementById('push-body').value = '';
+}
+
+// ===== Competitor Monitor =====
+function addCompetitor() {
+  var url = document.getElementById('comp-url').value;
+  var name = document.getElementById('comp-name').value;
+  if (!url || !name) { alert('URLとサイト名を入力してください'); return; }
+  var list = document.getElementById('competitor-list');
+  var div = document.createElement('div');
+  div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);';
+  div.innerHTML = '<div><strong>' + name + '</strong><br><span style="color:var(--text-secondary);font-size:11px;">' + url + '</span></div><span style="background:var(--text-secondary);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;">未確認</span>';
+  list.appendChild(div);
+  document.getElementById('comp-url').value = '';
+  document.getElementById('comp-name').value = '';
+}
+
+function submitManualPromo(status) {
+  var type = document.getElementById('manual-type').value;
+  var competitor = document.getElementById('manual-competitor').value;
+  var message = document.getElementById('manual-message').value;
+  var code = document.getElementById('manual-code').value;
+  if (!message) { alert('投稿内容を入力してください'); return; }
+  var channels = [];
+  if (document.getElementById('manual-ch-x').checked) channels.push('X');
+  if (document.getElementById('manual-ch-tg').checked) channels.push('Telegram');
+  if (document.getElementById('manual-ch-push').checked) channels.push('プッシュ');
+  if (document.getElementById('manual-ch-email').checked) channels.push('メール');
+  if (status === 'pending') {
+    alert('承認申請しました。Telegramに通知を送信します。\n\nチャネル: ' + channels.join(', ') + '\nコード: ' + (code || 'なし') + '\n\n承認後に配信されます。');
+  } else {
+    alert('下書きに保存しました。');
+  }
+  document.getElementById('manual-message').value = '';
+}
+
+function saveTelegramSettings() {
+  var token = document.getElementById('tg-bot-token').value;
+  var groupId = document.getElementById('tg-group-id').value;
+  if (!token || !groupId) { alert('Bot TokenとグループIDは必須です'); return; }
+  alert('Telegram設定を保存しました\n\nBot: ' + token.substring(0, 10) + '...\nGroup: ' + groupId + '\nTopic: ' + (document.getElementById('tg-topic-id').value || 'なし'));
+}
+
+function testTelegramNotification() {
+  alert('テスト通知を送信しました。Telegramグループを確認してください。');
+}
+
+function editActionTemplate(type) {
+  var labels = { down: 'ダウン検知', maint: 'メンテ中', withdraw: '出金遅延' };
+  var defaults = {
+    down: '{competitor}がダウン中! 今ならスロ天で遊べます。限定コード{code}で¥500ボーナス',
+    maint: '{competitor}メンテ中でも遊べるのはスロ天! 今すぐプレイ',
+    withdraw: 'スロ天は出金即時! {competitor}で待ってる間にスロ天で遊ぼう',
+  };
+  var template = prompt(labels[type] + 'テンプレートを編集:\n\n変数: {competitor}, {code}, {url}', defaults[type]);
+  if (template) alert('テンプレートを保存しました');
+}
+
+function saveSnsSettings() {
+  var settings = {
+    x: { enabled: document.getElementById('sns-x-enabled')?.checked, apiKey: document.getElementById('sns-x-apikey')?.value, apiSecret: document.getElementById('sns-x-apisecret')?.value, accessToken: document.getElementById('sns-x-token')?.value, accessSecret: document.getElementById('sns-x-tokensecret')?.value, account: document.getElementById('sns-x-account')?.value },
+    telegram: { enabled: document.getElementById('sns-tg-enabled')?.checked, botToken: document.getElementById('sns-tg-bot')?.value, channelId: document.getElementById('sns-tg-channel')?.value, notifyGroupId: document.getElementById('sns-tg-notify')?.value, topicId: document.getElementById('sns-tg-topic')?.value },
+    discord: { enabled: document.getElementById('sns-dc-enabled')?.checked, webhookUrl: document.getElementById('sns-dc-webhook')?.value, channelName: document.getElementById('sns-dc-channel')?.value },
+    instagram: { enabled: document.getElementById('sns-ig-enabled')?.checked, accessToken: document.getElementById('sns-ig-token')?.value, accountId: document.getElementById('sns-ig-account')?.value },
+    line: { enabled: document.getElementById('sns-line-enabled')?.checked, channelToken: document.getElementById('sns-line-token')?.value, channelSecret: document.getElementById('sns-line-secret')?.value },
+  };
+  localStorage.setItem('crm_sns_settings', JSON.stringify(settings));
+  alert('SNS設定を保存しました\n\n有効なチャネル: ' + Object.entries(settings).filter(function(e) { return e[1].enabled; }).map(function(e) { return e[0]; }).join(', '));
+}
+
+// Load SNS settings on page load
+(function() {
+  var saved = localStorage.getItem('crm_sns_settings');
+  if (!saved) return;
+  try {
+    var s = JSON.parse(saved);
+    if (s.x?.apiKey) document.getElementById('sns-x-apikey').value = s.x.apiKey;
+    if (s.x?.account) document.getElementById('sns-x-account').value = s.x.account;
+    if (s.telegram?.botToken) document.getElementById('sns-tg-bot').value = s.telegram.botToken;
+    if (s.telegram?.channelId) document.getElementById('sns-tg-channel').value = s.telegram.channelId;
+    if (s.discord?.webhookUrl) document.getElementById('sns-dc-webhook').value = s.discord.webhookUrl;
+  } catch(e) {}
+})();
+
+function createCustomSegment() {
+  var name = document.getElementById('seg-name').value;
+  var source = document.getElementById('seg-source').value;
+  if (!name) { alert('セグメント名を入力してください'); return; }
+  if (source === 'csv') {
+    var file = document.getElementById('seg-csv-file').files[0];
+    if (!file) { alert('CSVファイルを選択してください'); return; }
+    var reader = new FileReader();
+    reader.onload = function() {
+      var lines = reader.result.split('\n').filter(function(l) { return l.trim(); });
+      alert('セグメント「' + name + '」を作成しました\n\nCSVから ' + lines.length + ' ユーザーをインポート');
+    };
+    reader.readAsText(file);
+  } else if (source === 'bigquery') {
+    var query = document.getElementById('seg-bq-query').value;
+    if (!query) { alert('SQLクエリを入力してください'); return; }
+    alert('セグメント「' + name + '」を作成しました\n\nBigQueryクエリを実行中...\n' + query.substring(0, 100));
+  } else {
+    var condition = document.getElementById('seg-condition').value;
+    var value = document.getElementById('seg-value').value;
+    alert('セグメント「' + name + '」を作成しました\n\n条件: ' + condition + ' = ' + value);
+  }
+  document.getElementById('seg-name').value = '';
+}
+
+function checkAllCompetitors() {
+  alert('全サイトのヘルスチェックを実行中...\n\n結果はログに表示されます。');
+  // In production: call competitor check API
+}
+</script>
+</body>
+</html>

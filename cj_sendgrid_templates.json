@@ -1,0 +1,202 @@
+{
+  "P1": {
+    "task_id": "P1",
+    "name": "CJ-P1: 赤アラート",
+    "subject": "【スロット天国】赤アラート - VIP+5日ログインなし",
+    "sendgrid_template_id": "d-60a986409f3244a08c5a7da1e57d96c6",
+    "version_id": "642353e4-c8fa-4451-b752-49c3f0bc94bd",
+    "source_url": "https://promo-factory.pages.dev/emails/red-alert-vip.html"
+  },
+  "P2": {
+    "task_id": "P2",
+    "name": "CJ-P2: オレンジアラート",
+    "subject": "【スロット天国】オレンジアラート - 3日ログインなし+BET50%減",
+    "sendgrid_template_id": "d-7e42c972e14540aa83aea0ebf3903725",
+    "version_id": "28441f5d-d3b4-48cc-b939-a3c8c47b01a8",
+    "source_url": "https://promo-factory.pages.dev/emails/orange-alert.html"
+  },
+  "P3": {
+    "task_id": "P3",
+    "name": "CJ-P3: 大負け後フォロー",
+    "subject": "【スロット天国】大負け後フォロー - 前日GGR -5万以上",
+    "sendgrid_template_id": "d-6f014b4a252c4eb0a5cdb83625bd101a",
+    "version_id": "03a45a27-5d48-4d80-b30d-1915eae914db",
+    "source_url": "https://promo-factory.pages.dev/emails/big-loss-comfort.html"
+  },
+  "P4": {
+    "task_id": "P4",
+    "name": "CJ-P4: FTDおめでとう",
+    "subject": "【スロット天国】FTDおめでとう - FTD直後",
+    "sendgrid_template_id": "d-9f84f05d253b404c9946975b660cd670",
+    "version_id": "e391d76d-d5cf-4d6b-9d6f-3f280054b52a",
+    "source_url": "https://promo-factory.pages.dev/emails/ftd-welcome.html"
+  },
+  "P5": {
+    "task_id": "P5",
+    "name": "CJ-P5: FTDフォロー",
+    "subject": "【スロット天国】FTDフォロー - FTD+1日",
+    "sendgrid_template_id": "d-b4d92e21af6e47c086e1a57af5c12065",
+    "version_id": "d494a31c-4665-480d-a87d-426d3cc81ac0",
+    "source_url": "https://promo-factory.pages.dev/emails/ftd-day1-followup.html"
+  },
+  "P6": {
+    "task_id": "P6",
+    "name": "CJ-P6: ステップ訴求",
+    "subject": "【スロット天国】ステップ訴求 - FTD+3日 ステップ未参加",
+    "sendgrid_template_id": "d-0c50223de81e428ba2c988a51bbff48e",
+    "version_id": "8428f052-f90f-4acd-80f3-cf10da41971c",
+    "source_url": "https://promo-factory.pages.dev/emails/step-up-reminder.html"
+  },
+  "P10": {
+    "task_id": "P10",
+    "name": "CJ-P10: 48h限定ボーナス",
+    "subject": "【スロット天国】48h限定ボーナス - 登録+2日",
+    "sendgrid_template_id": "d-d6f8808c1dbf472688c5c8d19feff2f5",
+    "version_id": "87c3cd3e-158f-4572-ba06-3a071b70cdc7",
+    "source_url": "https://promo-factory.pages.dev/emails/deposit-48h-bonus.html"
+  },
+  "P12": {
+    "task_id": "P12",
+    "name": "CJ-P12: NDB最終リマインド",
+    "subject": "【スロット天国】NDB最終リマインド - 登録+5日",
+    "sendgrid_template_id": "d-2b28f7a1d10d411593cd49d5c8f7a37b",
+    "version_id": "db126eb2-b340-4289-9995-b47dd610f2cf",
+    "source_url": "https://promo-factory.pages.dev/emails/ndb-final-remind.html"
+  },
+  "P13": {
+    "task_id": "P13",
+    "name": "CJ-P13: NDB消滅リマインド",
+    "subject": "【スロット天国】NDB消滅リマインド - 有効期限2日前",
+    "sendgrid_template_id": "d-31bbd4eb596746488c8a54f740e7b4d7",
+    "version_id": "b50c65e0-59c9-4114-8b00-f294a2c48b8a",
+    "source_url": "https://promo-factory.pages.dev/emails/ndb-expiry-remind.html"
+  },
+  "P16": {
+    "task_id": "P16",
+    "name": "CJ-P16: 誕生日(高)",
+    "subject": "【スロット天国】誕生日(高) - GGR 100万+",
+    "sendgrid_template_id": "d-f4ab62024b764067b93c016662cb1102",
+    "version_id": "9779e236-772e-452b-91b9-d7b95a9bed34",
+    "source_url": "https://promo-factory.pages.dev/emails/birthday-high.html"
+  },
+  "P17": {
+    "task_id": "P17",
+    "name": "CJ-P17: 誕生日(中)",
+    "subject": "【スロット天国】誕生日(中) - GGR 30万〜100万",
+    "sendgrid_template_id": "d-335788631cbc4ff099f082fb50cac87d",
+    "version_id": "4553b90f-e7b2-4129-9fde-85fd82c95dc9",
+    "source_url": "https://promo-factory.pages.dev/emails/birthday-mid.html"
+  },
+  "P18": {
+    "task_id": "P18",
+    "name": "CJ-P18: 誕生日(低)",
+    "subject": "【スロット天国】誕生日(低) - GGR 30万未満",
+    "sendgrid_template_id": "d-9cf4d1973b6b4e46a035b014e954473a",
+    "version_id": "68935539-237b-4359-bc85-2c5a6a63f4cd",
+    "source_url": "https://promo-factory.pages.dev/emails/birthday-low.html"
+  },
+  "P20": {
+    "task_id": "P20",
+    "name": "CJ-P20: 連続7日",
+    "subject": "【スロット天国】連続7日 - 7日連続ベット",
+    "sendgrid_template_id": "d-d01388959cce4634b9dffbc2c2cc59a8",
+    "version_id": "fcfac7e9-d89d-4a08-847f-c22f960974b1",
+    "source_url": "https://promo-factory.pages.dev/emails/streak-7d.html"
+  },
+  "P21": {
+    "task_id": "P21",
+    "name": "CJ-P21: 連続15日",
+    "subject": "【スロット天国】連続15日 - 15日連続ベット",
+    "sendgrid_template_id": "d-488093802e7f414f8e8a86189875b017",
+    "version_id": "65f31ae9-fbae-4cb6-aea5-3d18916314be",
+    "source_url": "https://promo-factory.pages.dev/emails/streak-15d.html"
+  },
+  "P22": {
+    "task_id": "P22",
+    "name": "CJ-P22: 連続30日",
+    "subject": "【スロット天国】連続30日 - 30日連続ベット",
+    "sendgrid_template_id": "d-262c106038974b8aa8e50559efedd66e",
+    "version_id": "9f47da8a-90ff-466b-8c23-dc076ae105e9",
+    "source_url": "https://promo-factory.pages.dev/emails/streak-30d.html"
+  },
+  "P23": {
+    "task_id": "P23",
+    "name": "CJ-P23: 黄色アラート",
+    "subject": "【スロット天国】黄色アラート - BET頻度50%減",
+    "sendgrid_template_id": "d-3dbb799b78e94af98795babcaa345600",
+    "version_id": "e787924e-1cd8-4779-81d6-402f7729c6f1",
+    "source_url": "https://promo-factory.pages.dev/emails/yellow-alert.html"
+  },
+  "P24": {
+    "task_id": "P24",
+    "name": "CJ-P24: 7日休眠",
+    "subject": "【スロット天国】7日休眠 - 7日BETなし",
+    "sendgrid_template_id": "d-0887843ff469419b8994e4d87d7a79cb",
+    "version_id": "df5877be-b346-4bee-97f4-29e9814a20e1",
+    "source_url": "https://promo-factory.pages.dev/emails/inactive-7day.html"
+  },
+  "P25": {
+    "task_id": "P25",
+    "name": "CJ-P25: 14日休眠",
+    "subject": "【スロット天国】14日休眠 - 14日BETなし",
+    "sendgrid_template_id": "d-d9618c987e144fed8d478ef6553c79c3",
+    "version_id": "d1918a80-14ea-4b5f-addb-1ccc6de04ce7",
+    "source_url": "https://promo-factory.pages.dev/emails/inactive-14day.html"
+  },
+  "P26": {
+    "task_id": "P26",
+    "name": "CJ-P26: 30日休眠",
+    "subject": "【スロット天国】30日休眠 - 30日BETなし",
+    "sendgrid_template_id": "d-afb938392b38432183830a59eb826f75",
+    "version_id": "9e0a32b4-4ade-43cd-878b-8d150a0998fe",
+    "source_url": "https://promo-factory.pages.dev/emails/dormant-30day.html"
+  },
+  "P6.5": {
+    "task_id": "P6.5",
+    "name": "CJ-P6.5: ステップ2リマインド",
+    "subject": "【スロット天国】ステップ2リマインド - FTD+6日 ステップ2未実施",
+    "sendgrid_template_id": "d-39e442171a1a43c3bd2ce7ca3045c318",
+    "version_id": "6297006a-f19a-41c0-b703-124edfe57938",
+    "source_url": "https://promo-factory.pages.dev/emails/step2-remind.html"
+  },
+  "P6.6": {
+    "task_id": "P6.6",
+    "name": "CJ-P6.6: ステップ3訴求",
+    "subject": "【スロット天国】ステップ3訴求 - 入金2回 HS6000プラン",
+    "sendgrid_template_id": "d-5826b98c8d3d46b588f0a5b5e4269c83",
+    "version_id": "3940b171-e11b-494b-afa7-13499771038b",
+    "source_url": "https://promo-factory.pages.dev/emails/step3-promotion.html"
+  },
+  "P9.5": {
+    "task_id": "P9.5",
+    "name": "CJ-P9.5: 決済方法案内",
+    "subject": "【スロット天国】決済方法案内 - 登録2日目+未入金",
+    "sendgrid_template_id": "d-ca067b381c5543c4b28c6367d81b708a",
+    "version_id": "4b3f33ac-1709-4dc6-b460-dc4eae56cc87",
+    "source_url": "https://promo-factory.pages.dev/emails/payment-method-guide.html"
+  },
+  "P11.5": {
+    "task_id": "P11.5",
+    "name": "CJ-P11.5: ステップアップR1",
+    "subject": "【スロット天国】ステップアップR1 - 登録5日目+未入金",
+    "sendgrid_template_id": "d-a11ec7422b184e37b4071aed65a6e01a",
+    "version_id": "cc556d4f-6342-4817-ab38-84313535ba33",
+    "source_url": "https://promo-factory.pages.dev/emails/stepup-remind-r1.html"
+  },
+  "P11.6": {
+    "task_id": "P11.6",
+    "name": "CJ-P11.6: ステップアップR2",
+    "subject": "【スロット天国】ステップアップR2 - 登録7日目+未入金",
+    "sendgrid_template_id": "d-72ddad37c1374079ba5927939814a0b7",
+    "version_id": "c90183b3-921e-4c6f-b73c-b4de2d1f6131",
+    "source_url": "https://promo-factory.pages.dev/emails/stepup-remind-r2.html"
+  },
+  "P12.5": {
+    "task_id": "P12.5",
+    "name": "CJ-P12.5: 最終特別オファー",
+    "subject": "【スロット天国】最終特別オファー - 21日経過+未入金",
+    "sendgrid_template_id": "d-aa436a2fba2644e5a86f373e0539f6d5",
+    "version_id": "f7b51049-1684-4f07-abc1-3e1e086827e1",
+    "source_url": "https://promo-factory.pages.dev/emails/final-special-offer.html"
+  }
+}
