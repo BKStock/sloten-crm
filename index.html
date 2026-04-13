@@ -1441,9 +1441,67 @@ body {
   .alert-actions { flex-direction: column; align-items: stretch; }
   .memo-input { min-width: 100%; }
 }
+
+/* ===== Login Overlay ===== */
+.login-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(15,23,42,0.85); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-overlay.hidden { display: none; }
+.login-box {
+  background: var(--surface); border-radius: 16px; padding: 40px;
+  box-shadow: var(--shadow-lg); width: 380px; max-width: 90vw;
+}
+.login-box h2 { font-size: 20px; margin-bottom: 4px; }
+.login-box .login-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+.login-box label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; }
+.login-box input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--surface); color: var(--text); margin-bottom: 16px; }
+.login-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+.login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.login-box button:hover { background: var(--primary-hover); }
+.login-error { color: var(--red); font-size: 12px; margin-bottom: 12px; display: none; }
+
+/* ===== User Badge in Header ===== */
+.user-info { display: flex; align-items: center; gap: 8px; }
+.user-name { font-size: 13px; font-weight: 600; }
+.role-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; }
+.role-badge.admin { background: var(--red); color: #fff; }
+.role-badge.editor { background: var(--primary); color: #fff; }
+.role-badge.viewer { background: var(--text-tertiary); color: #fff; }
+.logout-btn { font-size: 12px; color: var(--text-secondary); background: var(--surface-alt); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; cursor: pointer; }
+.logout-btn:hover { color: var(--red); border-color: var(--red); }
+
+/* ===== Audit Log Table ===== */
+.audit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.audit-table th { background: var(--surface-alt); padding: 10px 12px; text-align: left; font-weight: 700; font-size: 12px; color: var(--text-secondary); border-bottom: 2px solid var(--border); }
+.audit-table td { padding: 10px 12px; border-bottom: 1px solid var(--border-light); }
+.audit-table tr:hover td { background: var(--surface-alt); }
+
+/* ===== Staff Management Table ===== */
+.staff-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.staff-table th { background: var(--surface-alt); padding: 8px 12px; text-align: left; font-weight: 700; font-size: 12px; color: var(--text-secondary); }
+.staff-table td { padding: 8px 12px; border-bottom: 1px solid var(--border-light); }
+.staff-table tr:hover td { background: var(--surface-alt); }
+.staff-status-active { color: var(--green); font-weight: 600; }
+.staff-status-inactive { color: var(--red); font-weight: 600; }
 </style>
 </head>
 <body>
+
+<!-- Login Overlay -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <h2>Sloten CRM</h2>
+    <p class="login-sub">スタッフログイン</p>
+    <div class="login-error" id="login-error">メールアドレスまたはパスワードが正しくありません</div>
+    <label>メールアドレス</label>
+    <input type="email" id="login-email" placeholder="admin@sloten.io" />
+    <label>パスワード</label>
+    <input type="password" id="login-password" placeholder="パスワード" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button onclick="doLogin()">ログイン</button>
+  </div>
+</div>
 
 <!-- Header -->
 <header class="header">
@@ -1460,10 +1518,16 @@ body {
       <button class="tab-btn" data-tab="journeyeditor" onclick="switchTab('journeyeditor')">ジャーニーエディタ</button>
       <button class="tab-btn" data-tab="push" onclick="switchTab('push')">プッシュ通知</button>
       <button class="tab-btn" data-tab="competitor" onclick="switchTab('competitor')">競合監視</button>
+      <button class="tab-btn" data-tab="auditlog" onclick="switchTab('auditlog')">監査ログ</button>
       <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">設定</button>
     </nav>
   </div>
   <div class="header-right">
+    <div class="user-info" id="user-info" style="display:none;">
+      <span class="user-name" id="header-user-name"></span>
+      <span class="role-badge" id="header-role-badge"></span>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Dark mode">
       <svg class="icon-sun" viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
       <svg class="icon-moon" viewBox="0 0 24 24" style="display:none"><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></svg>
@@ -2333,8 +2397,87 @@ body {
   </section>
 
   <!-- ===== Settings Page ===== -->
+  <!-- Audit Log Page -->
+  <section class="page" id="page-auditlog">
+    <h1 class="page-title">監査ログ</h1>
+    <div class="card" style="padding:20px;">
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:end;">
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">スタッフ</label>
+          <select id="audit-filter-staff" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="">全員</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">アクション</label>
+          <select id="audit-filter-action" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="">全て</option>
+            <option value="login">ログイン</option>
+            <option value="send_push">プッシュ送信</option>
+            <option value="submit_promo">プロモ投稿</option>
+            <option value="save_sns">SNS設定保存</option>
+            <option value="save_telegram">Telegram設定保存</option>
+            <option value="create_staff">スタッフ作成</option>
+            <option value="update_staff">スタッフ更新</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">開始日</label>
+          <input type="date" id="audit-filter-from" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">終了日</label>
+          <input type="date" id="audit-filter-to" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;" />
+        </div>
+        <button onclick="loadAuditLogs()" style="padding:8px 20px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">検索</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>日時</th>
+              <th>スタッフ</th>
+              <th>アクション</th>
+              <th>対象</th>
+              <th>詳細</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody id="audit-log-body">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-tertiary);padding:40px;">ログを読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <section class="page" id="page-settings">
     <h1 class="page-title">設定</h1>
+
+    <!-- Staff Management (admin only) -->
+    <div class="settings-section" id="staff-management-section" style="display:none;">
+      <h2 class="settings-title">スタッフ管理</h2>
+      <div style="margin-bottom:16px;">
+        <button onclick="showAddStaffDialog()" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ スタッフ追加</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="staff-table">
+          <thead>
+            <tr>
+              <th>名前</th>
+              <th>メール</th>
+              <th>ロール</th>
+              <th>最終ログイン</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="staff-table-body">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-tertiary);padding:20px;">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- Alert Settings -->
     <div class="settings-section">
@@ -2712,6 +2855,7 @@ var TAB_NAMES = {
   journeyeditor: "ジャーニーエディタ",
   push: "プッシュ通知",
   competitor: "競合監視",
+  auditlog: "監査ログ",
   settings: "設定",
 };
 
@@ -3516,6 +3660,7 @@ function sendPushNotification() {
   var url = document.getElementById('push-url').value;
   if (!title || !body) { alert('タイトルと本文を入力してください'); return; }
   // In production: call push notification API
+  logAudit('send_push', segment, 'タイトル: ' + title + ' / 本文: ' + body);
   alert('プッシュ通知を送信しました\n\n対象: ' + segment + '\nタイトル: ' + title + '\n本文: ' + body + (image ? '\n画像: あり' : '') + '\nURL: ' + url);
   document.getElementById('push-title').value = '';
   document.getElementById('push-body').value = '';
@@ -3546,6 +3691,7 @@ function submitManualPromo(status) {
   if (document.getElementById('manual-ch-tg').checked) channels.push('Telegram');
   if (document.getElementById('manual-ch-push').checked) channels.push('プッシュ');
   if (document.getElementById('manual-ch-email').checked) channels.push('メール');
+  logAudit('submit_promo', status, 'タイプ: ' + type + ' / チャネル: ' + channels.join(', ') + ' / コード: ' + (code || 'なし'));
   if (status === 'pending') {
     alert('承認申請しました。Telegramに通知を送信します。\n\nチャネル: ' + channels.join(', ') + '\nコード: ' + (code || 'なし') + '\n\n承認後に配信されます。');
   } else {
@@ -3558,6 +3704,7 @@ function saveTelegramSettings() {
   var token = document.getElementById('tg-bot-token').value;
   var groupId = document.getElementById('tg-group-id').value;
   if (!token || !groupId) { alert('Bot TokenとグループIDは必須です'); return; }
+  logAudit('save_telegram', 'telegram_settings', 'Group: ' + groupId);
   alert('Telegram設定を保存しました\n\nBot: ' + token.substring(0, 10) + '...\nGroup: ' + groupId + '\nTopic: ' + (document.getElementById('tg-topic-id').value || 'なし'));
 }
 
@@ -3585,7 +3732,9 @@ function saveSnsSettings() {
     line: { enabled: document.getElementById('sns-line-enabled')?.checked, channelToken: document.getElementById('sns-line-token')?.value, channelSecret: document.getElementById('sns-line-secret')?.value },
   };
   localStorage.setItem('crm_sns_settings', JSON.stringify(settings));
-  alert('SNS設定を保存しました\n\n有効なチャネル: ' + Object.entries(settings).filter(function(e) { return e[1].enabled; }).map(function(e) { return e[0]; }).join(', '));
+  var enabledChannels = Object.entries(settings).filter(function(e) { return e[1].enabled; }).map(function(e) { return e[0]; }).join(', ');
+  logAudit('save_sns', 'sns_settings', '有効チャネル: ' + enabledChannels);
+  alert('SNS設定を保存しました\n\n有効なチャネル: ' + enabledChannels);
 }
 
 // Load SNS settings on page load
@@ -3641,6 +3790,214 @@ function addKpiRow() {
   tr.innerHTML = '<td style="font-weight:600;">' + name + '</td><td>' + target + '</td><td>0</td><td>0%</td><td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:0%;height:100%;background:var(--primary);border-radius:4px;"></div></div></td><td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">進行中</span></td>';
   tbody.appendChild(tr);
 }
+
+// ===== Authentication =====
+var CRM_USER = null;
+var CRM_TOKEN = null;
+
+function getAuthHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + CRM_TOKEN };
+}
+
+function doLogin() {
+  var email = document.getElementById('login-email').value;
+  var password = document.getElementById('login-password').value;
+  var errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+
+  fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: password })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      errEl.style.display = 'block';
+      errEl.textContent = data.error;
+      return;
+    }
+    CRM_TOKEN = data.token;
+    CRM_USER = data.user;
+    localStorage.setItem('crm_token', data.token);
+    onLoginSuccess();
+  })
+  .catch(function(e) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'ログインに失敗しました';
+  });
+}
+
+function doLogout() {
+  CRM_TOKEN = null;
+  CRM_USER = null;
+  localStorage.removeItem('crm_token');
+  document.getElementById('login-overlay').classList.remove('hidden');
+  document.getElementById('user-info').style.display = 'none';
+}
+
+function onLoginSuccess() {
+  document.getElementById('login-overlay').classList.add('hidden');
+  document.getElementById('user-info').style.display = 'flex';
+  document.getElementById('header-user-name').textContent = CRM_USER.name;
+  var badge = document.getElementById('header-role-badge');
+  badge.textContent = CRM_USER.role;
+  badge.className = 'role-badge ' + CRM_USER.role;
+
+  // Show staff management for admins
+  if (CRM_USER.role === 'admin') {
+    document.getElementById('staff-management-section').style.display = 'block';
+    loadStaffList();
+  }
+}
+
+function checkAuth() {
+  var token = localStorage.getItem('crm_token');
+  if (!token) {
+    document.getElementById('login-overlay').classList.remove('hidden');
+    return;
+  }
+  CRM_TOKEN = token;
+  fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      localStorage.removeItem('crm_token');
+      document.getElementById('login-overlay').classList.remove('hidden');
+      return;
+    }
+    CRM_USER = data.user;
+    onLoginSuccess();
+  })
+  .catch(function() {
+    document.getElementById('login-overlay').classList.remove('hidden');
+  });
+}
+
+// Run auth check on load
+checkAuth();
+
+// ===== Audit Logging Helper =====
+function logAudit(action, target, details) {
+  if (!CRM_TOKEN) return;
+  fetch('/api/audit-log', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ action: action, target: target, details: details })
+  }).catch(function() {});
+}
+
+// ===== Audit Log Tab =====
+function loadAuditLogs() {
+  if (!CRM_TOKEN) return;
+  var params = [];
+  var staff = document.getElementById('audit-filter-staff').value;
+  var action = document.getElementById('audit-filter-action').value;
+  var from = document.getElementById('audit-filter-from').value;
+  var to = document.getElementById('audit-filter-to').value;
+  if (staff) params.push('staff_id=' + encodeURIComponent(staff));
+  if (action) params.push('action=' + encodeURIComponent(action));
+  if (from) params.push('date_from=' + encodeURIComponent(from));
+  if (to) params.push('date_to=' + encodeURIComponent(to + 'T23:59:59'));
+  var url = '/api/audit-log' + (params.length ? '?' + params.join('&') : '');
+
+  fetch(url, { headers: getAuthHeaders() })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var tbody = document.getElementById('audit-log-body');
+    if (!data.logs || data.logs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-tertiary);padding:40px;">ログがありません</td></tr>';
+      return;
+    }
+    var actionLabels = { login: 'ログイン', send_push: 'プッシュ送信', submit_promo: 'プロモ投稿', save_sns: 'SNS設定保存', save_telegram: 'Telegram設定保存', create_staff: 'スタッフ作成', update_staff: 'スタッフ更新' };
+    tbody.innerHTML = data.logs.map(function(log) {
+      var dt = log.created_at ? new Date(log.created_at + 'Z').toLocaleString('ja-JP') : '-';
+      var actionLabel = actionLabels[log.action] || log.action;
+      return '<tr><td>' + dt + '</td><td>' + (log.staff_name || '-') + '</td><td>' + actionLabel + '</td><td>' + (log.target || '-') + '</td><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (log.details || '-') + '</td><td style="font-size:11px;color:var(--text-tertiary);">' + (log.ip || '-') + '</td></tr>';
+    }).join('');
+  })
+  .catch(function() {
+    document.getElementById('audit-log-body').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--red);padding:40px;">読み込みエラー</td></tr>';
+  });
+}
+
+// ===== Staff Management =====
+function loadStaffList() {
+  if (!CRM_TOKEN) return;
+  fetch('/api/staff', { headers: getAuthHeaders() })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var tbody = document.getElementById('staff-table-body');
+    if (!data.staff || data.staff.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-tertiary);padding:20px;">スタッフなし</td></tr>';
+      return;
+    }
+    // Populate audit filter dropdown
+    var staffSelect = document.getElementById('audit-filter-staff');
+    staffSelect.innerHTML = '<option value="">全員</option>';
+    data.staff.forEach(function(s) {
+      staffSelect.innerHTML += '<option value="' + s.id + '">' + s.name + '</option>';
+    });
+
+    tbody.innerHTML = data.staff.map(function(s) {
+      var lastLogin = s.last_login ? new Date(s.last_login + 'Z').toLocaleString('ja-JP') : '未ログイン';
+      var statusClass = s.is_active ? 'staff-status-active' : 'staff-status-inactive';
+      var statusText = s.is_active ? '有効' : '無効';
+      var roleLabels = { admin: '管理者', editor: '編集者', viewer: '閲覧者' };
+      return '<tr>' +
+        '<td style="font-weight:600;">' + s.name + '</td>' +
+        '<td>' + s.email + '</td>' +
+        '<td><span class="role-badge ' + s.role + '">' + (roleLabels[s.role] || s.role) + '</span></td>' +
+        '<td style="font-size:12px;">' + lastLogin + '</td>' +
+        '<td><span class="' + statusClass + '">' + statusText + '</span></td>' +
+        '<td><button onclick="toggleStaffStatus(\'' + s.id + '\',' + (s.is_active ? 'false' : 'true') + ')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);cursor:pointer;">' + (s.is_active ? '無効化' : '有効化') + '</button></td>' +
+        '</tr>';
+    }).join('');
+  });
+}
+
+function showAddStaffDialog() {
+  var name = prompt('スタッフ名:');
+  if (!name) return;
+  var email = prompt('メールアドレス:');
+  if (!email) return;
+  var password = prompt('パスワード:');
+  if (!password) return;
+  var role = prompt('ロール (admin / editor / viewer):', 'viewer');
+  if (!role) return;
+
+  fetch('/api/staff', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ name: name, email: email, password: password, role: role })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { alert('エラー: ' + data.error); return; }
+    alert('スタッフを追加しました');
+    loadStaffList();
+  });
+}
+
+function toggleStaffStatus(id, activate) {
+  fetch('/api/staff', {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ id: id, is_active: activate })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { alert('エラー: ' + data.error); return; }
+    loadStaffList();
+  });
+}
+
+// Load audit logs when switching to audit tab
+var origSwitchTab = switchTab;
+switchTab = function(tab) {
+  origSwitchTab(tab);
+  if (tab === 'auditlog') loadAuditLogs();
+};
 </script>
 </body>
 </html>
