@@ -1455,6 +1455,9 @@ body {
       <button class="tab-btn" data-tab="analytics" onclick="switchTab('analytics')">CJ自動メール</button>
       <button class="tab-btn" data-tab="journey" onclick="switchTab('journey')">ジャーニー</button>
       <button class="tab-btn" data-tab="vip" onclick="switchTab('vip')">VIP管理</button>
+      <button class="tab-btn" data-tab="kpi" onclick="switchTab('kpi')">KPI管理</button>
+      <button class="tab-btn" data-tab="abtest" onclick="switchTab('abtest')">A/Bテスト</button>
+      <button class="tab-btn" data-tab="journeyeditor" onclick="switchTab('journeyeditor')">ジャーニーエディタ</button>
       <button class="tab-btn" data-tab="push" onclick="switchTab('push')">プッシュ通知</button>
       <button class="tab-btn" data-tab="competitor" onclick="switchTab('competitor')">競合監視</button>
       <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">設定</button>
@@ -1538,6 +1541,89 @@ body {
             <tr><td style="font-weight:600;">Bonsダウン時プロモ</td><td>SNS+プッシュ</td><td>1,500</td><td>55%</td><td style="color:var(--green);">28%</td><td style="color:var(--green);">15%</td><td>22%</td><td style="color:var(--green);font-weight:700;">+210%</td></tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Financial Overview Graph -->
+    <div class="card" style="margin-top:16px;padding:20px;">
+      <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;">Financial Overview (過去7日間)</h2>
+      <div style="display:flex;align-items:flex-end;gap:12px;height:200px;padding:0 8px;border-bottom:2px solid var(--border);">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:60%;" title="Deposits: ¥1,240,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:35%;" title="GGR: ¥720,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/6</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:75%;" title="Deposits: ¥1,560,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:42%;" title="GGR: ¥860,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/7</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:50%;" title="Deposits: ¥1,020,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:28%;" title="GGR: ¥580,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/8</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:85%;" title="Deposits: ¥1,780,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:55%;" title="GGR: ¥1,120,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/9</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:65%;" title="Deposits: ¥1,340,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:38%;" title="GGR: ¥780,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/10</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:92%;" title="Deposits: ¥1,920,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:60%;" title="GGR: ¥1,230,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/11</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+          <div style="display:flex;gap:4px;align-items:flex-end;height:100%;">
+            <div style="width:18px;background:var(--green);border-radius:4px 4px 0 0;height:70%;" title="Deposits: ¥1,450,000"></div>
+            <div style="width:18px;background:var(--primary);border-radius:4px 4px 0 0;height:45%;" title="GGR: ¥920,000"></div>
+          </div>
+          <span style="font-size:11px;color:var(--text-tertiary);">4/12</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:var(--text-secondary);">
+        <span><span style="display:inline-block;width:12px;height:12px;background:var(--green);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Deposits</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:var(--primary);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>GGR</span>
+      </div>
+      <!-- KPI Summary Cards -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;">
+        <div style="background:var(--surface-alt);padding:16px;border-radius:8px;text-align:center;">
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">FTD数 (7日)</div>
+          <div style="font-size:22px;font-weight:700;color:var(--green);">47</div>
+          <div style="font-size:11px;color:var(--green);">+8.2% vs 先週</div>
+        </div>
+        <div style="background:var(--surface-alt);padding:16px;border-radius:8px;text-align:center;">
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">GGR合計</div>
+          <div style="font-size:22px;font-weight:700;color:var(--primary);">&#165;6,210,000</div>
+          <div style="font-size:11px;color:var(--green);">+12.5% vs 先週</div>
+        </div>
+        <div style="background:var(--surface-alt);padding:16px;border-radius:8px;text-align:center;">
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Revenue</div>
+          <div style="font-size:22px;font-weight:700;">&#165;2,480,000</div>
+          <div style="font-size:11px;color:var(--green);">+5.3% vs 先週</div>
+        </div>
+        <div style="background:var(--surface-alt);padding:16px;border-radius:8px;text-align:center;">
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Total Deposits</div>
+          <div style="font-size:22px;font-weight:700;color:var(--green);">&#165;10,310,000</div>
+          <div style="font-size:11px;color:var(--green);">+9.7% vs 先週</div>
+        </div>
       </div>
     </div>
 
@@ -1685,6 +1771,247 @@ body {
           </thead>
           <tbody id="vip-tbody"></tbody>
         </table>
+      </div>
+    </div>
+    <!-- AI Churn Prediction -->
+    <div class="card" style="margin-top:24px;">
+      <div class="card-header">
+        <span class="card-title">AI離脱予測</span>
+        <button class="btn btn-outline btn-sm" onclick="alert('高リスクユーザー3名にリテンションメールを送信しました。')">高リスクユーザーにリテンションメール送信</button>
+      </div>
+      <div class="card-body" style="padding:0;overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ユーザー</th>
+              <th>離脱確率(%)</th>
+              <th>リスクレベル</th>
+              <th>最終ログイン</th>
+              <th>推奨アクション</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">user_8821</td>
+              <td style="color:var(--red);font-weight:700;">92%</td>
+              <td><span style="background:var(--red-bg);color:var(--red);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;border:1px solid var(--red-border);">高</span></td>
+              <td>14日前</td>
+              <td>VIP専用キャッシュバック + 電話フォロー</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">user_3342</td>
+              <td style="color:var(--red);font-weight:700;">87%</td>
+              <td><span style="background:var(--red-bg);color:var(--red);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;border:1px solid var(--red-border);">高</span></td>
+              <td>10日前</td>
+              <td>復帰ボーナス&#165;10,000 + プッシュ通知</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">user_5567</td>
+              <td style="color:var(--red);font-weight:700;">78%</td>
+              <td><span style="background:var(--red-bg);color:var(--red);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;border:1px solid var(--red-border);">高</span></td>
+              <td>8日前</td>
+              <td>フリースピン50回 + メール送信</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">user_1204</td>
+              <td style="color:var(--orange);font-weight:700;">55%</td>
+              <td><span style="background:var(--orange-bg);color:var(--orange);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;border:1px solid var(--orange-border);">中</span></td>
+              <td>5日前</td>
+              <td>入金マッチボーナス50%</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">user_7789</td>
+              <td style="color:var(--yellow);font-weight:700;">32%</td>
+              <td><span style="background:var(--yellow-bg);color:var(--yellow);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;border:1px solid var(--yellow-border);">低</span></td>
+              <td>3日前</td>
+              <td>プッシュ通知でリマインド</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== KPI Management Page ===== -->
+  <section class="page" id="page-kpi">
+    <h1 class="page-title">KPI管理</h1>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">KPI定義テーブル</span>
+        <button class="btn btn-outline btn-sm" onclick="openModal('<h2 style=\'margin-bottom:16px;font-size:16px;\'>KPI追加</h2><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>KPI名</label><input id=\'new-kpi-name\' type=\'text\' placeholder=\'KPI名\' style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'></div><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>目標値</label><input id=\'new-kpi-target\' type=\'text\' placeholder=\'例: 100\' style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'></div><button onclick=\'addKpiRow();closeModalForce();\' style=\'width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;\'>追加</button>')">+ KPI追加</button>
+      </div>
+      <div class="card-body" style="padding:0;overflow-x:auto;">
+        <table class="data-table" id="kpi-def-table">
+          <thead>
+            <tr>
+              <th>名前</th>
+              <th>目標値</th>
+              <th>現在値</th>
+              <th>達成率</th>
+              <th>進捗</th>
+              <th>ステータス</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">FTD数/月</td>
+              <td>200</td>
+              <td>168</td>
+              <td>84%</td>
+              <td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:84%;height:100%;background:var(--primary);border-radius:4px;"></div></div></td>
+              <td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">進行中</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">GGR/月</td>
+              <td>&#165;30,000,000</td>
+              <td>&#165;26,400,000</td>
+              <td>88%</td>
+              <td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:88%;height:100%;background:var(--primary);border-radius:4px;"></div></div></td>
+              <td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">進行中</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">入金額/月</td>
+              <td>&#165;50,000,000</td>
+              <td>&#165;52,300,000</td>
+              <td>105%</td>
+              <td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:100%;height:100%;background:var(--green);border-radius:4px;"></div></div></td>
+              <td><span style="background:var(--green-bg);color:var(--green);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">達成</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">リテンション率</td>
+              <td>65%</td>
+              <td>58%</td>
+              <td>89%</td>
+              <td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:89%;height:100%;background:var(--orange);border-radius:4px;"></div></div></td>
+              <td><span style="background:var(--orange-bg);color:var(--orange);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">未達成</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">ARPU</td>
+              <td>&#165;25,000</td>
+              <td>&#165;27,800</td>
+              <td>111%</td>
+              <td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:100%;height:100%;background:var(--green);border-radius:4px;"></div></div></td>
+              <td><span style="background:var(--green-bg);color:var(--green);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">達成</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== A/B Test Page ===== -->
+  <section class="page" id="page-abtest">
+    <h1 class="page-title">A/Bテスト</h1>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">テスト一覧</span>
+        <button class="btn btn-outline btn-sm" onclick="openModal('<h2 style=\'margin-bottom:16px;font-size:16px;\'>新規A/Bテスト作成</h2><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>テスト名</label><input id=\'ab-name\' type=\'text\' placeholder=\'テスト名\' style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'></div><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>バリアントA内容</label><input id=\'ab-a\' type=\'text\' placeholder=\'バリアントA\' style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'></div><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>バリアントB内容</label><input id=\'ab-b\' type=\'text\' placeholder=\'バリアントB\' style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'></div><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>対象セグメント</label><select style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'><option>全ユーザー</option><option>アクティブユーザー</option><option>VIPユーザー</option><option>未入金ユーザー</option></select></div><div style=\'margin-bottom:12px;\'><label style=\'font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;\'>期間</label><input type=\'text\' placeholder=\'例: 7日間\' style=\'width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;\'></div><button onclick=\'alert(\"A/Bテストを作成しました\");closeModalForce();\' style=\'width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;\'>作成</button>')">+ 新規テスト</button>
+      </div>
+      <div class="card-body" style="padding:0;overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>テスト名</th>
+              <th>バリアントA</th>
+              <th>バリアントB</th>
+              <th>ステータス</th>
+              <th>結果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">メール件名テスト</td>
+              <td>通常件名</td>
+              <td>絵文字入り件名</td>
+              <td><span style="background:var(--green-bg);color:var(--green);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">完了</span></td>
+              <td style="color:var(--green);font-weight:700;">Winner: B (+12%)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">プッシュ送信時間</td>
+              <td>12:00送信</td>
+              <td>19:00送信</td>
+              <td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">進行中</span></td>
+              <td>A: 34% vs B: 41%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Journey Editor Page ===== -->
+  <section class="page" id="page-journeyeditor">
+    <h1 class="page-title">ジャーニーエディタ</h1>
+    <div class="card" style="padding:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="font-size:16px;font-weight:700;">新規登録 → 初回入金フォロー</h2>
+        <button class="btn btn-outline btn-sm" onclick="openModal('<h2 style=\'margin-bottom:16px;font-size:16px;\'>ノード追加</h2><div style=\'display:flex;flex-direction:column;gap:8px;\'><button onclick=\'alert(\"メール送信ノードを追加\");closeModalForce();\' style=\'padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-align:left;font-size:14px;\'>&#9993; メール送信</button><button onclick=\'alert(\"プッシュ通知ノードを追加\");closeModalForce();\' style=\'padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-align:left;font-size:14px;\'>&#128276; プッシュ通知</button><button onclick=\'alert(\"SMSノードを追加\");closeModalForce();\' style=\'padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-align:left;font-size:14px;\'>&#128172; SMS</button><button onclick=\'alert(\"待機ノードを追加\");closeModalForce();\' style=\'padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-align:left;font-size:14px;\'>&#9203; 待機</button><button onclick=\'alert(\"条件分岐ノードを追加\");closeModalForce();\' style=\'padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-align:left;font-size:14px;\'>&#9670; 条件分岐</button><button onclick=\'alert(\"ゴールノードを追加\");closeModalForce();\' style=\'padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-align:left;font-size:14px;\'>&#127937; ゴール</button></div>')">+ ノード追加</button>
+      </div>
+      <!-- Journey Flow -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <!-- Start -->
+        <div style="background:var(--green);color:#fff;padding:12px 24px;border-radius:24px;font-weight:700;font-size:14px;text-align:center;">START<br><span style="font-size:11px;font-weight:400;">新規登録トリガー</span></div>
+        <div style="width:2px;height:24px;background:var(--border);"></div>
+        <div style="color:var(--text-tertiary);font-size:11px;">&#9660;</div>
+        <div style="width:2px;height:8px;background:var(--border);"></div>
+        <!-- Wait 1h -->
+        <div style="background:var(--surface-alt);border:2px solid var(--border);padding:12px 24px;border-radius:var(--radius);text-align:center;min-width:180px;">
+          <div style="font-size:18px;">&#9203;</div>
+          <div style="font-weight:600;font-size:13px;">待機</div>
+          <div style="font-size:11px;color:var(--text-secondary);">1時間</div>
+        </div>
+        <div style="width:2px;height:24px;background:var(--border);"></div>
+        <div style="color:var(--text-tertiary);font-size:11px;">&#9660;</div>
+        <div style="width:2px;height:8px;background:var(--border);"></div>
+        <!-- Send welcome email -->
+        <div style="background:var(--primary-light);border:2px solid var(--primary);padding:12px 24px;border-radius:var(--radius);text-align:center;min-width:180px;">
+          <div style="font-size:18px;">&#9993;</div>
+          <div style="font-weight:600;font-size:13px;">メール送信</div>
+          <div style="font-size:11px;color:var(--text-secondary);">ウェルカムメール</div>
+        </div>
+        <div style="width:2px;height:24px;background:var(--border);"></div>
+        <div style="color:var(--text-tertiary);font-size:11px;">&#9660;</div>
+        <div style="width:2px;height:8px;background:var(--border);"></div>
+        <!-- Condition: deposited? -->
+        <div style="background:var(--yellow-bg);border:2px solid var(--yellow-border);padding:12px 24px;border-radius:var(--radius);text-align:center;min-width:200px;transform:rotate(0deg);">
+          <div style="font-size:18px;">&#9670;</div>
+          <div style="font-weight:600;font-size:13px;">条件分岐</div>
+          <div style="font-size:11px;color:var(--text-secondary);">入金した？</div>
+        </div>
+        <div style="width:2px;height:12px;background:var(--border);"></div>
+        <!-- Branches -->
+        <div style="display:flex;gap:48px;align-items:flex-start;">
+          <!-- Yes branch -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+            <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px;">Yes</div>
+            <div style="width:2px;height:16px;background:var(--green);"></div>
+            <div style="background:var(--green-bg);border:2px solid var(--green);padding:12px 20px;border-radius:var(--radius);text-align:center;min-width:150px;">
+              <div style="font-size:18px;">&#127873;</div>
+              <div style="font-weight:600;font-size:13px;">ボーナス付与</div>
+              <div style="font-size:11px;color:var(--text-secondary);">初回入金ボーナス</div>
+            </div>
+            <div style="width:2px;height:16px;background:var(--border);"></div>
+            <div style="background:var(--text);color:var(--surface);padding:8px 20px;border-radius:16px;font-weight:700;font-size:12px;">END</div>
+          </div>
+          <!-- No branch -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+            <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px;">No</div>
+            <div style="width:2px;height:16px;background:var(--red);"></div>
+            <div style="background:var(--surface-alt);border:2px solid var(--border);padding:12px 20px;border-radius:var(--radius);text-align:center;min-width:150px;">
+              <div style="font-size:18px;">&#9203;</div>
+              <div style="font-weight:600;font-size:13px;">待機</div>
+              <div style="font-size:11px;color:var(--text-secondary);">24時間</div>
+            </div>
+            <div style="width:2px;height:16px;background:var(--border);"></div>
+            <div style="background:var(--orange-bg);border:2px solid var(--orange);padding:12px 20px;border-radius:var(--radius);text-align:center;min-width:150px;">
+              <div style="font-size:18px;">&#9993;</div>
+              <div style="font-weight:600;font-size:13px;">リマインダー送信</div>
+              <div style="font-size:11px;color:var(--text-secondary);">入金促進メール</div>
+            </div>
+            <div style="width:2px;height:16px;background:var(--border);"></div>
+            <div style="background:var(--text);color:var(--surface);padding:8px 20px;border-radius:16px;font-weight:700;font-size:12px;">END</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -2105,6 +2432,105 @@ body {
       <button onclick="saveSnsSettings()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">SNS設定を保存</button>
     </div>
 
+    <!-- Laffic SMS API Settings -->
+    <div class="settings-section">
+      <h2 class="settings-title">Laffic API設定 (SMS)</h2>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">SMS配信に使用するLaffic APIの認証情報を設定します。</p>
+      <div class="setting-row">
+        <div class="setting-label">API Key</div>
+        <div class="setting-control"><input type="text" id="laffic-api-key" class="setting-input" placeholder="laffic_key_xxxxxxxx" style="width:100%;font-family:monospace;"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">API Secret</div>
+        <div class="setting-control"><input type="password" id="laffic-api-secret" class="setting-input" placeholder="laffic_secret_xxxxxxxx" style="width:100%;font-family:monospace;"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Sender ID</div>
+        <div class="setting-control"><input type="text" id="laffic-sender-id" class="setting-input" placeholder="Sloten" style="width:100%;"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label"></div>
+        <div class="setting-control">
+          <button class="btn btn-outline btn-sm" onclick="alert('テストSMSを送信しました。\n\nSender: ' + (document.getElementById('laffic-sender-id').value || 'Sloten') + '\nStatus: OK')">テストSMS送信</button>
+        </div>
+      </div>
+
+      <!-- SMS Templates -->
+      <h3 style="font-size:14px;font-weight:700;margin-top:24px;margin-bottom:12px;">SMSテンプレート管理</h3>
+      <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:12px;">利用可能変数: {username}, {amount}, {code}, {url}</p>
+
+      <div style="display:flex;flex-direction:column;gap:12px;" id="sms-templates">
+        <div style="padding:12px;background:var(--surface-alt);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong style="font-size:13px;">入金完了</strong>
+            <span class="sms-char-count" style="font-size:11px;color:var(--text-tertiary);">54文字</span>
+          </div>
+          <textarea oninput="this.previousElementSibling.querySelector('.sms-char-count')||0;this.parentElement.querySelector('.sms-char-count').textContent=this.value.length+'文字'" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;resize:vertical;">{username}様、&#165;{amount}の入金を確認しました。反映まで数分お待ちください。</textarea>
+        </div>
+        <div style="padding:12px;background:var(--surface-alt);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong style="font-size:13px;">出金完了</strong>
+            <span class="sms-char-count" style="font-size:11px;color:var(--text-tertiary);">48文字</span>
+          </div>
+          <textarea oninput="this.parentElement.querySelector('.sms-char-count').textContent=this.value.length+'文字'" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;resize:vertical;">{username}様、&#165;{amount}の出金処理が完了しました。ご確認ください。</textarea>
+        </div>
+        <div style="padding:12px;background:var(--surface-alt);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong style="font-size:13px;">7日未ログイン</strong>
+            <span class="sms-char-count" style="font-size:11px;color:var(--text-tertiary);">62文字</span>
+          </div>
+          <textarea oninput="this.parentElement.querySelector('.sms-char-count').textContent=this.value.length+'文字'" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;resize:vertical;">{username}様、お久しぶりです！復帰ボーナスをご用意しました。詳細はこちら: {url}</textarea>
+        </div>
+        <div style="padding:12px;background:var(--surface-alt);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong style="font-size:13px;">VIP昇格</strong>
+            <span class="sms-char-count" style="font-size:11px;color:var(--text-tertiary);">58文字</span>
+          </div>
+          <textarea oninput="this.parentElement.querySelector('.sms-char-count').textContent=this.value.length+'文字'" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;resize:vertical;">{username}様、VIPランクが昇格しました！特典の詳細はこちら: {url}</textarea>
+        </div>
+        <div style="padding:12px;background:var(--surface-alt);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <strong style="font-size:13px;">2FA認証コード</strong>
+            <span class="sms-char-count" style="font-size:11px;color:var(--text-tertiary);">38文字</span>
+          </div>
+          <textarea oninput="this.parentElement.querySelector('.sms-char-count').textContent=this.value.length+'文字'" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;resize:vertical;">Sloten認証コード: {code} (有効期限5分) 共有しないでください</textarea>
+        </div>
+      </div>
+
+      <button onclick="alert('SMS設定とテンプレートを保存しました')" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:16px;">SMS設定を保存</button>
+    </div>
+
+    <!-- Communication Policy -->
+    <div class="settings-section">
+      <h2 class="settings-title">配信頻度制限</h2>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">ユーザーへの配信頻度を制限し、過剰な通知を防止します。</p>
+      <div class="setting-row">
+        <div class="setting-label">メール上限 (1ユーザー/日)</div>
+        <div class="setting-control"><input type="number" id="policy-email-max" class="setting-input" value="2" min="1" max="10" style="width:80px;"> 通/日</div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">SMS上限 (1ユーザー/日)</div>
+        <div class="setting-control"><input type="number" id="policy-sms-max" class="setting-input" value="1" min="1" max="10" style="width:80px;"> 通/日</div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">プッシュ上限 (1ユーザー/日)</div>
+        <div class="setting-control"><input type="number" id="policy-push-max" class="setting-input" value="3" min="1" max="20" style="width:80px;"> 通/日</div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">配信停止時間帯（開始）</div>
+        <div class="setting-control"><input type="time" id="policy-quiet-start" class="setting-input" value="22:00" style="width:120px;"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">配信停止時間帯（終了）</div>
+        <div class="setting-control"><input type="time" id="policy-quiet-end" class="setting-input" value="08:00" style="width:120px;"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">メッセージ間クールダウン</div>
+        <div class="setting-control"><input type="number" id="policy-cooldown" class="setting-input" value="30" min="5" max="1440" style="width:80px;"> 分</div>
+      </div>
+      <button onclick="alert('配信頻度制限を保存しました\n\nメール: ' + document.getElementById('policy-email-max').value + '通/日\nSMS: ' + document.getElementById('policy-sms-max').value + '通/日\nプッシュ: ' + document.getElementById('policy-push-max').value + '通/日\n配信停止: ' + document.getElementById('policy-quiet-start').value + ' - ' + document.getElementById('policy-quiet-end').value + '\nクールダウン: ' + document.getElementById('policy-cooldown').value + '分')" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:16px;">配信頻度制限を保存</button>
+    </div>
+
     <!-- BigQuery -->
     <div class="settings-section">
       <h2 class="settings-title">BigQuery接続</h2>
@@ -2281,6 +2707,9 @@ var TAB_NAMES = {
   analytics: "CJ自動メール",
   journey: "ジャーニー管理",
   vip: "VIP管理",
+  kpi: "KPI管理",
+  abtest: "A/Bテスト",
+  journeyeditor: "ジャーニーエディタ",
   push: "プッシュ通知",
   competitor: "競合監視",
   settings: "設定",
@@ -3201,6 +3630,16 @@ function createCustomSegment() {
 function checkAllCompetitors() {
   alert('全サイトのヘルスチェックを実行中...\n\n結果はログに表示されます。');
   // In production: call competitor check API
+}
+
+function addKpiRow() {
+  var name = document.getElementById('new-kpi-name').value;
+  var target = document.getElementById('new-kpi-target').value;
+  if (!name || !target) { alert('KPI名と目標値を入力してください'); return; }
+  var tbody = document.querySelector('#kpi-def-table tbody');
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td style="font-weight:600;">' + name + '</td><td>' + target + '</td><td>0</td><td>0%</td><td><div style="width:100%;background:var(--surface-alt);border-radius:4px;height:8px;overflow:hidden;"><div style="width:0%;height:100%;background:var(--primary);border-radius:4px;"></div></div></td><td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;">進行中</span></td>';
+  tbody.appendChild(tr);
 }
 </script>
 </body>
