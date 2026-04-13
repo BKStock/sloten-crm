@@ -1526,6 +1526,7 @@ body {
     <div class="user-info" id="user-info" style="display:none;">
       <span class="user-name" id="header-user-name"></span>
       <span class="role-badge" id="header-role-badge"></span>
+      <span id="approval-badge" style="display:none;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;cursor:pointer;" onclick="switchTab('settings')"></span>
       <button class="logout-btn" onclick="doLogout()">ログアウト</button>
     </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Dark mode">
@@ -2477,6 +2478,94 @@ body {
           </tbody>
         </table>
       </div>
+    </div>
+
+    <!-- Permission Settings (admin only) -->
+    <div class="settings-section" id="permission-settings-section" style="display:none;">
+      <h2 class="settings-title">権限設定 (RBAC)</h2>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">ロールごとの権限マトリクスを管理します。変更後「権限を保存」をクリックしてください。</p>
+      <div style="overflow-x:auto;">
+        <table class="staff-table" id="permission-matrix-table" style="font-size:12px;">
+          <thead>
+            <tr>
+              <th>カテゴリ</th>
+              <th>権限</th>
+              <th style="text-align:center;">管理者 (admin)</th>
+              <th style="text-align:center;">編集者 (editor)</th>
+              <th style="text-align:center;">閲覧者 (viewer)</th>
+            </tr>
+          </thead>
+          <tbody id="permission-matrix-body">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-tertiary);padding:20px;">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button onclick="savePermissions()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:16px;">権限を保存</button>
+    </div>
+
+    <!-- Approval Queue (admin only) -->
+    <div class="settings-section" id="approval-queue-section" style="display:none;">
+      <h2 class="settings-title">承認待ちキュー</h2>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">エディターやビューアーから送信された承認リクエストを管理します。</p>
+      <div style="overflow-x:auto;">
+        <table class="staff-table" style="font-size:12px;">
+          <thead>
+            <tr>
+              <th>日時</th>
+              <th>申請者</th>
+              <th>アクション</th>
+              <th>詳細</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="approval-queue-body">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-tertiary);padding:20px;">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;">
+        <button onclick="loadApprovals('pending')" style="padding:6px 14px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">未処理</button>
+        <button onclick="loadApprovals('approved')" style="padding:6px 14px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">承認済</button>
+        <button onclick="loadApprovals('rejected')" style="padding:6px 14px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">却下済</button>
+      </div>
+    </div>
+
+    <!-- Data Sharing Settings (admin only) -->
+    <div class="settings-section" id="data-sharing-section" style="display:none;">
+      <h2 class="settings-title">データ共有設定</h2>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:16px;">各データタイプの共有範囲を設定します。</p>
+      <div class="setting-row">
+        <div class="setting-label">送信履歴の共有範囲</div>
+        <div class="setting-control">
+          <select id="share-send-history" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="all">全員</option>
+            <option value="same_role_up">同ロール以上</option>
+            <option value="self">個人のみ</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">テンプレートの共有範囲</div>
+        <div class="setting-control">
+          <select id="share-templates" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="all">全員</option>
+            <option value="editor_up">editor以上</option>
+            <option value="admin_only">admin のみ</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">監査ログの閲覧範囲</div>
+        <div class="setting-control">
+          <select id="share-audit-log" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="admin_only">admin のみ</option>
+            <option value="editor_up">editor以上</option>
+            <option value="all">全員</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="saveDataSharingSettings()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-top:16px;">共有設定を保存</button>
     </div>
 
     <!-- Alert Settings -->
@@ -3653,12 +3742,24 @@ loadDashboardData();
 
 // ===== Push Notification =====
 function sendPushNotification() {
+  // Check permission
+  if (!hasPermission('push_send')) { alert('権限がありません。管理者にお問い合わせください。'); return; }
+
   var segment = document.getElementById('push-segment').value;
   var title = document.getElementById('push-title').value;
   var body = document.getElementById('push-body').value;
   var image = document.getElementById('push-image').value;
   var url = document.getElementById('push-url').value;
   if (!title || !body) { alert('タイトルと本文を入力してください'); return; }
+
+  // Check if approval required
+  if (needsApproval('push_send')) {
+    submitForApproval('push_send', { segment: segment, title: title, body: body, image: image, url: url });
+    document.getElementById('push-title').value = '';
+    document.getElementById('push-body').value = '';
+    return;
+  }
+
   // In production: call push notification API
   logAudit('send_push', segment, 'タイトル: ' + title + ' / 本文: ' + body);
   alert('プッシュ通知を送信しました\n\n対象: ' + segment + '\nタイトル: ' + title + '\n本文: ' + body + (image ? '\n画像: あり' : '') + '\nURL: ' + url);
@@ -3681,6 +3782,9 @@ function addCompetitor() {
 }
 
 function submitManualPromo(status) {
+  // Check permission
+  if (!hasPermission('promo_post')) { alert('権限がありません。管理者にお問い合わせください。'); return; }
+
   var type = document.getElementById('manual-type').value;
   var competitor = document.getElementById('manual-competitor').value;
   var message = document.getElementById('manual-message').value;
@@ -3691,6 +3795,14 @@ function submitManualPromo(status) {
   if (document.getElementById('manual-ch-tg').checked) channels.push('Telegram');
   if (document.getElementById('manual-ch-push').checked) channels.push('プッシュ');
   if (document.getElementById('manual-ch-email').checked) channels.push('メール');
+
+  // If approval needed, submit for approval via API
+  if (status === 'pending' && needsApproval('promo_post')) {
+    submitForApproval('promo_post', { type: type, competitor: competitor, message: message, code: code, channels: channels.join(', ') });
+    document.getElementById('manual-message').value = '';
+    return;
+  }
+
   logAudit('submit_promo', status, 'タイプ: ' + type + ' / チャネル: ' + channels.join(', ') + ' / コード: ' + (code || 'なし'));
   if (status === 'pending') {
     alert('承認申請しました。Telegramに通知を送信します。\n\nチャネル: ' + channels.join(', ') + '\nコード: ' + (code || 'なし') + '\n\n承認後に配信されます。');
@@ -3844,10 +3956,23 @@ function onLoginSuccess() {
   badge.textContent = CRM_USER.role;
   badge.className = 'role-badge ' + CRM_USER.role;
 
-  // Show staff management for admins
+  // Load permissions for current user
+  fetch('/api/permissions', { headers: getAuthHeaders() })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.permissions) CRM_PERMISSIONS = data.permissions;
+  })
+  .catch(function() {});
+
+  // Show admin-only sections
   if (CRM_USER.role === 'admin') {
     document.getElementById('staff-management-section').style.display = 'block';
+    document.getElementById('permission-settings-section').style.display = 'block';
+    document.getElementById('approval-queue-section').style.display = 'block';
+    document.getElementById('data-sharing-section').style.display = 'block';
     loadStaffList();
+    loadApprovalBadge();
+    loadDataSharingSettings();
   }
 }
 
@@ -3997,7 +4122,261 @@ var origSwitchTab = switchTab;
 switchTab = function(tab) {
   origSwitchTab(tab);
   if (tab === 'auditlog') loadAuditLogs();
+  if (tab === 'settings' && CRM_USER && CRM_USER.role === 'admin') {
+    loadPermissions();
+    loadApprovals('pending');
+  }
 };
+
+// ===== RBAC Permission System =====
+var CRM_PERMISSIONS = null;
+
+var PERMISSION_LABELS = {
+  push_send: { cat: '送信', label: 'プッシュ通知送信' },
+  push_settings: { cat: '設定', label: 'プッシュ設定' },
+  promo_post: { cat: '送信', label: 'プロモ投稿' },
+  promo_approve: { cat: '管理', label: 'プロモ承認' },
+  sms_send: { cat: '送信', label: 'SMS送信' },
+  sms_settings: { cat: '設定', label: 'SMS設定' },
+  email_send: { cat: '送信', label: 'メール送信' },
+  email_settings: { cat: '設定', label: 'メール設定' },
+  sns_settings: { cat: '設定', label: 'SNS設定' },
+  telegram_settings: { cat: '設定', label: 'Telegram設定' },
+  competitor_monitor: { cat: '分析', label: '競合モニタリング' },
+  competitor_action: { cat: '管理', label: '競合アクション' },
+  segment_create: { cat: '管理', label: 'セグメント作成' },
+  segment_delete: { cat: '管理', label: 'セグメント削除' },
+  template_edit: { cat: 'CJ', label: 'テンプレート編集' },
+  template_delete: { cat: 'CJ', label: 'テンプレート削除' },
+  staff_manage: { cat: '管理', label: 'スタッフ管理' },
+  staff_create: { cat: '管理', label: 'スタッフ作成' },
+  audit_view: { cat: '分析', label: '監査ログ閲覧' },
+  settings_edit: { cat: '設定', label: '設定変更' },
+  cj_execute: { cat: 'CJ', label: 'CJ実行' },
+  cj_edit: { cat: 'CJ', label: 'CJ編集' },
+  vip_manage: { cat: '管理', label: 'VIP管理' },
+  kpi_edit: { cat: '分析', label: 'KPI編集' },
+  ab_test: { cat: '分析', label: 'A/Bテスト' },
+  journey_edit: { cat: 'CJ', label: 'ジャーニー編集' },
+  export_csv: { cat: '分析', label: 'CSVエクスポート' },
+  bigquery_settings: { cat: '設定', label: 'BigQuery設定' },
+};
+
+function hasPermission(action) {
+  if (!CRM_USER) return false;
+  if (CRM_USER.role === 'admin') return true; // admin always has all permissions
+  if (!CRM_PERMISSIONS) return false;
+  var rolePerms = CRM_PERMISSIONS[CRM_USER.role];
+  if (!rolePerms) return false;
+  return !!rolePerms[action];
+}
+
+function needsApproval(action) {
+  if (!CRM_USER) return false;
+  if (CRM_USER.role === 'admin') return false;
+  // Actions that require approval for non-admins
+  var approvalRequired = ['push_send', 'promo_post', 'sms_send', 'email_send'];
+  return approvalRequired.indexOf(action) !== -1 && CRM_USER.role !== 'admin';
+}
+
+function submitForApproval(actionType, actionData) {
+  if (!CRM_TOKEN) return;
+  fetch('/api/approvals', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ action_type: actionType, action_data: actionData })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { alert('承認申請エラー: ' + data.error); return; }
+    alert('承認申請を送信しました (ID: ' + data.id + ')\n管理者の承認をお待ちください。');
+    loadApprovalBadge();
+  })
+  .catch(function() { alert('承認申請の送信に失敗しました'); });
+}
+
+function loadPermissions() {
+  if (!CRM_TOKEN) return;
+  fetch('/api/permissions', { headers: getAuthHeaders() })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.permissions) {
+      CRM_PERMISSIONS = data.permissions;
+      renderPermissionMatrix(data.permissions);
+    }
+  })
+  .catch(function() {
+    console.log('Failed to load permissions');
+  });
+}
+
+function renderPermissionMatrix(permissions) {
+  var tbody = document.getElementById('permission-matrix-body');
+  if (!tbody) return;
+
+  var cats = ['送信', '設定', '管理', '分析', 'CJ'];
+  var html = '';
+
+  cats.forEach(function(cat) {
+    var first = true;
+    var keys = Object.keys(PERMISSION_LABELS).filter(function(k) { return PERMISSION_LABELS[k].cat === cat; });
+    keys.forEach(function(key) {
+      html += '<tr>';
+      if (first) {
+        html += '<td rowspan="' + keys.length + '" style="font-weight:700;background:var(--surface-alt);vertical-align:middle;">' + cat + '</td>';
+        first = false;
+      }
+      html += '<td>' + PERMISSION_LABELS[key].label + '</td>';
+      ['admin', 'editor', 'viewer'].forEach(function(role) {
+        var checked = permissions[role] && permissions[role][key] ? 'checked' : '';
+        var disabled = role === 'admin' ? 'disabled' : '';
+        html += '<td style="text-align:center;"><input type="checkbox" data-role="' + role + '" data-perm="' + key + '" ' + checked + ' ' + disabled + ' style="width:18px;height:18px;cursor:pointer;"></td>';
+      });
+      html += '</tr>';
+    });
+  });
+
+  tbody.innerHTML = html;
+}
+
+function savePermissions() {
+  var checkboxes = document.querySelectorAll('#permission-matrix-body input[type="checkbox"]');
+  var permissions = { admin: {}, editor: {}, viewer: {} };
+
+  checkboxes.forEach(function(cb) {
+    var role = cb.getAttribute('data-role');
+    var perm = cb.getAttribute('data-perm');
+    permissions[role][perm] = cb.checked;
+  });
+
+  // Admin always has all permissions
+  Object.keys(PERMISSION_LABELS).forEach(function(k) { permissions.admin[k] = true; });
+
+  fetch('/api/permissions', {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ permissions: permissions })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { alert('保存エラー: ' + data.error); return; }
+    CRM_PERMISSIONS = permissions;
+    alert('権限設定を保存しました');
+  })
+  .catch(function() { alert('権限設定の保存に失敗しました'); });
+}
+
+// ===== Approval Workflow =====
+function loadApprovals(status) {
+  if (!CRM_TOKEN) return;
+  var statusParam = status || 'pending';
+  fetch('/api/approvals?status=' + statusParam, { headers: getAuthHeaders() })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var tbody = document.getElementById('approval-queue-body');
+    if (!tbody) return;
+    if (!data.approvals || data.approvals.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-tertiary);padding:20px;">承認待ちのリクエストはありません</td></tr>';
+      return;
+    }
+    var actionLabels = { push_send: 'プッシュ送信', promo_post: 'プロモ投稿', sms_send: 'SMS送信', email_send: 'メール送信', competitor_action: '競合アクション', segment_create: 'セグメント作成' };
+    var statusLabels = { pending: '未処理', approved: '承認済', rejected: '却下済' };
+    var statusColors = { pending: 'var(--orange)', approved: 'var(--green)', rejected: 'var(--red)' };
+
+    tbody.innerHTML = data.approvals.map(function(a) {
+      var dt = a.created_at ? new Date(a.created_at + 'Z').toLocaleString('ja-JP') : '-';
+      var actionLabel = actionLabels[a.action_type] || a.action_type;
+      var statusLabel = statusLabels[a.status] || a.status;
+      var statusColor = statusColors[a.status] || 'var(--text-secondary)';
+      var detailStr = '';
+      try { var d = JSON.parse(a.action_data); detailStr = Object.entries(d).map(function(e) { return e[0] + ': ' + e[1]; }).join(', '); } catch(e) { detailStr = a.action_data; }
+
+      var actions = '';
+      if (a.status === 'pending' && CRM_USER && CRM_USER.role === 'admin') {
+        actions = '<button onclick="reviewApproval(\'' + a.id + '\',\'approve\')" style="font-size:11px;padding:4px 10px;border:none;border-radius:4px;background:var(--green);color:#fff;cursor:pointer;margin-right:4px;">承認</button>' +
+                  '<button onclick="reviewApproval(\'' + a.id + '\',\'reject\')" style="font-size:11px;padding:4px 10px;border:none;border-radius:4px;background:var(--red);color:#fff;cursor:pointer;">却下</button>';
+      } else if (a.status !== 'pending') {
+        actions = (a.reviewer_name || '-') + (a.review_note ? ' (' + a.review_note + ')' : '');
+      }
+
+      return '<tr>' +
+        '<td style="font-size:12px;">' + dt + '</td>' +
+        '<td>' + (a.requester_name || '-') + '</td>' +
+        '<td>' + actionLabel + '</td>' +
+        '<td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">' + detailStr + '</td>' +
+        '<td><span style="color:' + statusColor + ';font-weight:600;font-size:12px;">' + statusLabel + '</span></td>' +
+        '<td>' + actions + '</td>' +
+        '</tr>';
+    }).join('');
+  })
+  .catch(function() {
+    var tbody = document.getElementById('approval-queue-body');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--red);padding:20px;">読み込みエラー</td></tr>';
+  });
+}
+
+function reviewApproval(id, action) {
+  var note = '';
+  if (action === 'reject') {
+    note = prompt('却下理由を入力してください:');
+    if (note === null) return;
+  }
+  fetch('/api/approvals', {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ id: id, action: action, review_note: note })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { alert('エラー: ' + data.error); return; }
+    alert(action === 'approve' ? '承認しました' : '却下しました');
+    loadApprovals('pending');
+    loadApprovalBadge();
+  })
+  .catch(function() { alert('処理に失敗しました'); });
+}
+
+function loadApprovalBadge() {
+  if (!CRM_TOKEN || !CRM_USER || CRM_USER.role !== 'admin') return;
+  fetch('/api/approvals?status=pending', { headers: getAuthHeaders() })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var badge = document.getElementById('approval-badge');
+    if (!badge) return;
+    var count = (data.approvals && data.approvals.length) || 0;
+    if (count > 0) {
+      badge.textContent = '承認待ち ' + count;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  })
+  .catch(function() {});
+}
+
+// ===== Data Sharing Settings =====
+function saveDataSharingSettings() {
+  var settings = {
+    send_history: document.getElementById('share-send-history').value,
+    templates: document.getElementById('share-templates').value,
+    audit_log: document.getElementById('share-audit-log').value,
+  };
+  localStorage.setItem('crm_data_sharing', JSON.stringify(settings));
+  logAudit('update_data_sharing', 'data_sharing', JSON.stringify(settings));
+  alert('データ共有設定を保存しました\n\n送信履歴: ' + settings.send_history + '\nテンプレート: ' + settings.templates + '\n監査ログ: ' + settings.audit_log);
+}
+
+function loadDataSharingSettings() {
+  var saved = localStorage.getItem('crm_data_sharing');
+  if (saved) {
+    try {
+      var settings = JSON.parse(saved);
+      if (settings.send_history) document.getElementById('share-send-history').value = settings.send_history;
+      if (settings.templates) document.getElementById('share-templates').value = settings.templates;
+      if (settings.audit_log) document.getElementById('share-audit-log').value = settings.audit_log;
+    } catch(e) {}
+  }
+}
 </script>
 </body>
 </html>
